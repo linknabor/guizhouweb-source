@@ -37,6 +37,9 @@ const webpackConfig = merge(baseWebpackConfig, {
         drop_debugger: true,
         drop_console: true
       },
+      mangle: {
+        safari10:true
+      },
       sourceMap: true
     }),
     // extract css into its own file

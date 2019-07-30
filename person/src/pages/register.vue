@@ -34,14 +34,16 @@ import axios from 'axios';
 export default {
    data () {
        return {
-            omeFrom:"",
             user:{},
             yzmtime : 60,
             yzmstr:"获取验证码",
             captcha: '',
             zzmb:false,
             isClick: false,
-            comeFrom:''
+            comeFrom:'',
+            xiaoquId:0,
+            xiaoquName:' ',
+            page:'main'
        };
    },
    created() {
@@ -116,7 +118,14 @@ export default {
             vm.simpleRegister();
         },
         simpleRegister() {
-             vm.receiveData.postData(vm,'simpleRegister',{mobile:vm.user.tel,name:vm.user.name,yzm:vm.captcha},'res',function(){
+            let obj = {
+                mobile:vm.user.tel,
+                name:vm.user.name,
+                yzm:vm.captcha,
+                xiaoquId:vm.xiaoquId,
+                xiaoquName:vm.xiaoquName
+            }
+             vm.receiveData.postData(vm,'simpleRegister',obj,'res',function(){
                  if(vm.res.success) {
                         vm.common.updateUserStatus(vm.res.result);
                               var page = "";		    	

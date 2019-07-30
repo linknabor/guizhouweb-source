@@ -2,7 +2,6 @@ import wx from 'weixin-js-sdk';
 
 var MasterConfig = function() {
     var t = {
-
         baseUrl: "https://www.e-shequ.com/guizhou/wechat/hexie/wechat/",
         basePageUrl:"https://www.e-shequ.com/guizhou/weixin/",
         payPageFolder:"https://test.e-shequ.com/pay/",

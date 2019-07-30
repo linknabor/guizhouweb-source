@@ -121,10 +121,10 @@ export default {
 
    },
    mounted() {
-       this.initSession4Test();
+    //    this.initSession4Test();
     //    console.log(Config1("user_info"))
-    //    this.User();
-    //    this.updateCouponStatus();
+       this.User();
+       this.updateCouponStatus();
    },
    components: {},
    methods: {

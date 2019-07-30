@@ -55,15 +55,16 @@ a{color: #000;opacity: 0.7;}
 	<div  class="wuye">
 		<div>
 		<div style="background-color:#ccc">
-		<swiper :options="swiperOption" ref="mySwiper">
+		<swiper :options="swiperOption" ref="mySwiper" v-if="banners.length>0">
            	 <swiper-slide v-for="item in banners" :key="item.id">
                 <div class="ban1">
                     <a :href="item.bannerUrl">
-                        <img :src="item.picture" alt="tt">
+						<img :src="item.picture" alt="">
                     </a>                  
                 </div> 
             </swiper-slide>
             <!-- <div class="swiper-pagination" slot="pagination"></div>        -->
+
        	</swiper>
 		   
 		</div>
@@ -239,12 +240,11 @@ a{color: #000;opacity: 0.7;}
 			},
 			//轮播图
 			bannerss(){
-				this.common.invokeApi("GET", "banner/3", null, null, function(n) {
-					vm.banners = n.result;
-					
-				}, function() {})
-			
-
+				let _this = this;
+				let url = 'banner/3';
+				_this.receiveData.getData(_this,url,'Data',function(){
+					vm.banners = vm.Data.result;
+				});
 			},
 		queryUserInfo() {
 			this.common.invokeApi("GET","userInfo",null,null, function(n) {
@@ -257,17 +257,7 @@ a{color: #000;opacity: 0.7;}
 			})
 		},
 		tab(){
-				// this.axios({
-				// 		url: '/messages/'+vm.page,
-				// 		method: 'get'
-				// 	}).then(res=>{
-				// 		vm.page++;
-				// 		let a  = JSON.parse(res.data)
-						
-				// 	vm.zixuns1 = a.result;
-				// 	vm.zixuns2 = a.result;
-				// 	vm.zixuns3 = a.result;
-				// })
+
 
 				this.common.invokeApi("GET", "messages/"+vm.page, null, null, function(n) {
 					// console.log(JSON.stringify(n));

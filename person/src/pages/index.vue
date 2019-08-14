@@ -28,11 +28,11 @@
               <i class="footer_logo footer_temai"></i>社区
             </a>
           </li> 
-          <li>
+          <!-- <li>
             <a :href="this.config.footer.home" class="nav-controller ">
               <i class="footer_logo footer_wuye_selected"></i>生活
             </a>
-          </li>
+          </li> -->
           <li>
             <a :href="this.config.footer.person" class="nav-controller  active">
               <i class="footer_logo footer_person"></i>我的

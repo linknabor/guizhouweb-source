@@ -45,7 +45,6 @@ export default {
        vm=this;
    },
    mounted() {
-        vm.common.checkRegisterStatus()
        this.add();
    },
 

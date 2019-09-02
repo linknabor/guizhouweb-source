@@ -141,11 +141,15 @@ export default {
             a = "userInfo",
             i = null,
             e = function(n){
+            if(n.success&&n.result==null) {
+                 reLogin();
+            }else {
                 vm.user = n.result;
                 vm.user.headimgurl ="" != n.result.name || n.result? n.result.headimgurl: Config1.C("user_info").avatar;
                 vm.user.name = "" != n.result.name? n.result.name: Config1.C("user_info").nickname;
                 vm.user.level = Config1.C("user_level")[n.result.level];
                 vm.user.officeTel = n.result.officeTel;
+            }
             },
             r = function(){
                 vm.user={};
@@ -167,30 +171,22 @@ export default {
             e = function(n) {
                 console.log(JSON.stringify(n));
             },
-            r = function() {
-
+            r = function(e) {
+               
             };
             vm.common.invokeApi(n, a, i, null, e, r)
         },
       
         //点击头像
         gotoEdit() {
-            if(this.common.hasRegister()) {
-                this.$router.push({path:'/bindphone'})
-            }else {
-                this.$router.push({path:'/register'})
-            }
+             this.$router.push({path:'/bindphone'})
         }  ,
         //现金券
         coupons() {
             vm.$router.push({path:'/coupons'})
         },
         gotoAddress() {
-            if(vm.common.hasRegister()){
-                 vm.$router.push({path:'/addresses'})
-        	} else {
-                this.$router.push({path:'/register'})
-        	}
+            vm.$router.push({path:'/addresses'})
         }
    },
    computed: {},

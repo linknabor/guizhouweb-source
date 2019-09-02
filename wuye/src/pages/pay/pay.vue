@@ -290,7 +290,6 @@
 		//   this.initSession4Test();
 	
 	  	//微信配置
-	  	this.common.checkRegisterStatus();
 	  	let url = location.href.split('#')[0]
 		vm.receiveData.wxconfig(vm,wx,['scanQRCode'],url);
 		  

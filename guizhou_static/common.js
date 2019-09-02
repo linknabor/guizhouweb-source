@@ -354,6 +354,6 @@ updateUserStatus(user) {
 
 };
 
-checkBindAndBind();
+// checkBindAndBind();
 checkCodeAndLogin();
 common.setTitle(MasterConfig.C("shop_name") );

@@ -1,25 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import bill from '@/components/bill'
-import footer from '@/components/footer' //底部导航
+// import index from '@/pages/index' //物业首页
+// import pay from '@/pages/pay/pay' //查询缴费
+// import parkFees from '@/pages/pay/parkFees'  //停车缴费
+// import payEnquiry from '@/pages/pay/payEnquiry' //缴费查询
+// import myHouse from '@/pages/house/myHouse'   //我的房屋
+// import addHouse from '@/pages/house/addHouse' //添加房屋
+// import bindHouse from '@/pages/house/bindHouse'  //绑定房屋
 
-import index from '@/pages/index' //物业首页
+// import butler from '@/pages/butler/index'   //我的管家
+// import threadDetail from '@/pages/butler/threadDetail'    //消息回复
 
-import pay from '@/pages/pay/pay' //查询缴费
-import parkFees from '@/pages/pay/parkFees'  //停车缴费
-import payEnquiry from '@/pages/pay/payEnquiry' //缴费查询
-
-import myHouse from '@/pages/house/myHouse'   //我的房屋
-import addHouse from '@/pages/house/addHouse' //添加房屋
-import bindHouse from '@/pages/house/bindHouse'  //绑定房屋
-
-import butler from '@/pages/butler/index'   //我的管家
-import threadDetail from '@/pages/butler/threadDetail'    //消息回复
-
-import publish from '@/pages/repairs/index'   //发布
-import news from '@/pages/news/index'        //新闻资讯
-
+// import publish from '@/pages/repairs/index'   //发布
+// import news from '@/pages/news/index'        //新闻资讯
 Vue.use(Router)
 
 const router= new Router({
@@ -27,7 +21,7 @@ const router= new Router({
     {
       path:'/',
       name:'index',
-      component:index,
+      component:resolve=>require(['@/pages/index'],resolve),
       meta:{
         title:'社区物业'
       },
@@ -35,7 +29,7 @@ const router= new Router({
     {
       path:'/pay',
       name:'pay',
-      component:pay,
+      component:resolve=>require(['@/pages/pay/pay'],resolve),
       meta:{
         title:'物业缴费'
       }
@@ -43,7 +37,7 @@ const router= new Router({
     {
       path:'/parkFees',
       name:'parkFees',
-      component:parkFees,
+      component:resolve=>require(['@/pages/pay/parkFees'],resolve),
       meta:{
         title:'停车缴费'
       }
@@ -51,7 +45,7 @@ const router= new Router({
     {
       path:'/payEnquiry',
       name:'payEnquiry',
-      component:payEnquiry,
+      component:resolve=>require(['@/pages/pay/payEnquiry'],resolve),
       meta:{
         title:'缴费查询'
       }
@@ -59,7 +53,7 @@ const router= new Router({
     {
       path:'/myHouse',
       name: 'myHouse',
-      component:myHouse,
+      component:resolve => require(['@/pages/house/myHouse'],resolve),
       meta:{
         title: '我的房屋'
       }
@@ -67,7 +61,7 @@ const router= new Router({
     {
       path: '/addHouse',
       name: 'addHouse',
-      component: addHouse,
+      component: resolve => require(['@/pages/house/addHouse'],resolve),
       meta:{
         title:'添加房屋'
       }
@@ -75,7 +69,7 @@ const router= new Router({
     {
       path: '/bindHouse/:number',
       name: 'bindHouse',
-      component: bindHouse,
+      component: resolve =>require(['@/pages/house/bindHouse'],resolve),
       meta:{
         title: '绑定房屋'
       }
@@ -83,7 +77,7 @@ const router= new Router({
     {
       path: '/butler',
       name: 'butler',
-      component: butler,
+      component: resolve =>require(['@/pages/butler/index'],resolve),
       meta:{
         title: '管家服务'
       }
@@ -91,7 +85,7 @@ const router= new Router({
     {
       path:'/threadDetail',
       name:'threadDetail',
-      component:threadDetail,
+      component: resolve =>require(['@/pages/butler/threadDetail'],resolve),
       meta:{
         title: ''
       }
@@ -99,7 +93,7 @@ const router= new Router({
     {
       path:'/publish',
       name:'publish',
-      component:publish,
+      component:resolve =>require(['@/pages/repairs/index'],resolve),
       meta:{
         title: ''
       }
@@ -107,7 +101,7 @@ const router= new Router({
     {
       path:'/news',
       name:'news',
-      component:news
+      component:resolve =>require(['@/pages/news/index'],resolve),
     },
 
   ]
@@ -115,9 +109,13 @@ const router= new Router({
 //路由的钩子函数，
 //在每一次路由跳转之前会进入这个方法 to：到哪去  from：从哪来 next() 调用这个方法来完成这个钩子函数
 router.beforeEach((to, from, next) => {
-  // if(to.matched[0].name !== "index") {
-  //   common.checkRegisterStatus()
-  // }
+  var flag;
+  if(to.matched[0].name != "index"&& to.matched[0].name!='register') {
+    flag= common.checkRegisterStatus()
+      if(!flag) {
+        return
+      }
+  }
     //动态改变title
     changeTitle(to.meta.title)
     next();

@@ -50,6 +50,7 @@ export default {
        vm=this;
    },
    mounted() {
+      
        vm.getUserInfo();
        vm.getComeFrom()
        
@@ -61,10 +62,15 @@ export default {
             a = "userInfo",
             i = null,
             e = function(n) {
-                vm.user = n.result;
-                if(vm.common.hasRegister()) {
-                    vm.$router.push({path:'/'})
+                if(n.success&&n.result==null) {
+                       reLogin();
+                }else {
+                    vm.user = n.result;
+                    if(vm.common.hasRegister()) {
+                        vm.$router.push({path:'/'})
+                    }
                 }
+                
             },
             r = function() {};
             vm.common.invokeApi(n, a, i, null, e, r)
@@ -128,7 +134,6 @@ export default {
              vm.receiveData.postData(vm,'simpleRegister',obj,'res',function(){
                  if(vm.res.success) {
                         vm.common.updateUserStatus(vm.res.result);
-                              var page = "";		    	
                             var forwardPage = "";
                             
                             if(vm.comeFrom){
@@ -137,12 +142,9 @@ export default {
                                 forwardPage = vm.config.footer.person;
                             }
                             console.log(vm.config.footer.person)
-                            if(page) {
-                                location.href = page+"?comeFrom="+forwardPage;
-                            }else{
+                            
                                 alert("注册成功。");
                                 location.href = forwardPage;
-                            }
                              // vm.$router.push({path:'/'})
                 }else {
                      vm.zzmb=false;

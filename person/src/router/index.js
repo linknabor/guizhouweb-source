@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/pages/index'
-import index from '@/pages/index/index'//首页
-import Bindphone from '@/pages/bindphone'//个人信息
-import Register from '@/pages/register'//手机注册页
-import Coupons from '@/pages/coupons'//我的优惠券
-import Myrepair from '@/pages/myRepair/myrepair'//我的维修
-import OrdersDetail from '@/pages/myRepair/ordersDetail'//维修详情
-import cancelOrders from '@/pages/myRepair/cancelOrders'//取消维修
-import OperatorOrders from '@/pages/myRepair/operatorOrders'//我的维修单
-import OperatorOrdersDetail from '@/pages/myRepair/operatorOrdersDetail'//我的维修我要抢单
-import OperatorRepairSuccess from '@/pages/myRepair/operatorRepairSuccess'//我要抢单 公共页面
+// import Index from '@/pages/index'
+// import index from '@/pages/index/index'//首页
+// import Bindphone from '@/pages/bindphone'//个人信息
+// import Register from '@/pages/register'//手机注册页
+// import Coupons from '@/pages/coupons'//我的优惠券
+// import Myrepair from '@/pages/myRepair/myrepair'//我的维修
+// import OrdersDetail from '@/pages/myRepair/ordersDetail'//维修详情
+// import cancelOrders from '@/pages/myRepair/cancelOrders'//取消维修
+// import OperatorOrders from '@/pages/myRepair/operatorOrders'//我的维修单
+// import OperatorOrdersDetail from '@/pages/myRepair/operatorOrdersDetail'//我的维修我要抢单
+// import OperatorRepairSuccess from '@/pages/myRepair/operatorRepairSuccess'//我要抢单 公共页面
 
 
 
@@ -23,24 +23,21 @@ let router= new Router({
     {
       path: '/',
       name: 'index',
-      component: Index,
+      component: resolve => require(['@/pages/index'],resolve),
       children:[
-        {path:'',component:index,meta:{title:'个人中心'}}
+        {
+          path:'',
+          component:resolve => require(['@/pages/index/index'],resolve),
+          meta:{
+            title:'个人中心'
+                }
+        }
       ]
     },
-    //首页
-    // {
-    //   path:'',
-    //   name:'index',
-    //   component:index,
-    //   meta: {
-    //     title:'个人中心'
-    //   }
-    // },
     {
       path:'/register',
       name:'register',
-      component:Register,
+      component:resolve => require(['@/pages/register'],resolve),
       meta: {
         title:'用户注册'
       }
@@ -48,7 +45,7 @@ let router= new Router({
     {
       path:'/bindphone',
       name:'bindphone',
-      component:Bindphone,
+      component:resolve => require(['@/pages/bindphone'],resolve),
       meta: {
         title:'编辑个人信息'
       }
@@ -56,7 +53,7 @@ let router= new Router({
     {
       path:'/coupons',
       name:'coupons',
-      component:Coupons,
+      component:resolve => require(['@/pages/coupons'],resolve),
       meta:{
         title:'我的现金券'
       }
@@ -65,17 +62,17 @@ let router= new Router({
     {
       path:'/operatorOrdersDetail',
       name:'operatorOrdersDetail',
-      component:OperatorOrdersDetail,
+      component:resolve => require(['@/pages/myRepair/operatorOrdersDetail'],resolve),
     },
     {
       path:'/operatorRepairSuccess',
       name:'operatorRepairSuccess',
-      component:OperatorRepairSuccess,
+      component:resolve => require(['@/pages/myRepair/operatorRepairSuccess'],resolve),
     },
     {
       path:'/operatorOrders',
       name:'operatorOrders',
-      component:OperatorOrders,
+      component:resolve => require(['@/pages/myRepair/operatorOrders'],resolve),
       meta: {
         title:''
       }
@@ -83,7 +80,7 @@ let router= new Router({
     {
       path:'/myrepair',
       name:'myrepair',
-      component:Myrepair,
+      component:resolve => require(['@/pages/myRepair/myrepair'],resolve),
       meta: {
         title:''
       }
@@ -91,7 +88,7 @@ let router= new Router({
     {
       path:'/ordersDetail',
       name:'ordersDetail',
-      component:OrdersDetail,
+      component:resolve => require(['@/pages/myRepair/ordersDetail'],resolve),
       meta: {
         title:'维修详情'
       }
@@ -99,7 +96,7 @@ let router= new Router({
     {
       path:'/cancelorders',
       name:'cancelorders',
-      component:cancelOrders,
+      component:resolve => require(['@/pages/myRepair/cancelOrders'],resolve),
       meta: {
         title:'取消维修'
       }
@@ -112,10 +109,13 @@ let router= new Router({
 //在每一次路由跳转之前会进入这个方法 to：到哪去  from：从哪来 next() 调用这个方法来完成这个钩子函数
 router.beforeEach((to, from, next) => {
   //动态改变title
-  // console.log(to.matched[0].name)
-  // if(to.matched[0].name !== "index") {
-  //    common.checkRegisterStatus()
-  // }
+  var flag;
+  if(to.matched[0].name != "index"&& to.matched[0].name!='register') {
+    flag=common.checkRegisterStatus();
+    if(!flag) {
+      return
+    }
+  }
 
   changeTitle(to.meta.title);
   next();

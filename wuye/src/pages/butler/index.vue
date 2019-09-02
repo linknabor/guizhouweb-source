@@ -95,7 +95,6 @@ export default {
    created() {
        vm=this;
         // 请求接口获取 后台返回的 微信配置项
-       vm.common.checkRegisterStatus();
    },
    mounted() {
        vm.getThreadList();

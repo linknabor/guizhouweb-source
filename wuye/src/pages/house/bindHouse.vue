@@ -67,48 +67,48 @@
 	  	}
 	  },
 	  mounted(){
-		  vm.common.checkRegisterStatus();
 	  	//查询number下的房屋
 	  	 let url = '/hexiehouse?stmtId='+ this.axiosParams.number+'&house_id=';
 	  	 // let url = '/hexiehouse/'+this.axiosParams.number;
 	  	//getData: function (vm, url,backdataname) {
   		vm.receiveData.getData(vm,url,'response',function(){
-			  if(vm.response.result== null) {
-				  vm.data={}
-				  alert('未查询到该房屋')
-				  vm.canAddhouse=false;
+			  if(vm.response.success) {
+					if(vm.response.result== null) {
+						vm.data={}
+						alert('未查询到该房屋')
+						vm.canAddhouse=false;
+					}else {
+						vm.data = vm.response.result
+						vm.canAddhouse=true;
+					}
 			  }else {
-				  vm.data = vm.response.result
-				  vm.canAddhouse=true;
+				  alert(vm.response.message==null?'未查询到该房屋':vm.response.message)
 			  }
+			  
   		})
 	  },
 	  methods:{
-	  	addHouse(){//添加房子 post 提交两个参数 
-	  		let stmtId = this.axiosParams.number;
-	  		let url2 = '/addhexiehouse?stmtId='+stmtId+'&houseId='+this.data.mng_cell_id;
-	  		vm.receiveData.postData(vm,url2,this.data,'res',function(){
-	  			// vm.loadingShow = false;
-	  			if(vm.res.success == true){
-	  				if(vm.res.result !== null){
-	  					MessageBox.alert('添加房子成功', vm.config.house_domain.domain).then( action =>{
-	  						vm.$router.push("/myHouse")
-	  					})
-	  				}else{
-	  					MessageBox.alert('添加房子失败', vm.config.house_domain.domain).then( action =>{
-	  						vm.$router.push("/myHouse")
-	  					})
-	  				}
-	  			}else{
-	  				MessageBox.alert(vm.res.message).then( action =>{
-						vm.$router.push("/addHouse")
-	  				})
-	  			}
-
-
-
-	  		})
-
+		  addHouse(){//添加房子 post 提交两个参数 
+				let stmtId = this.axiosParams.number;
+				let url2 = '/addhexiehouse?stmtId='+stmtId+'&houseId='+this.data.mng_cell_id;
+				vm.receiveData.postData(vm,url2,this.data,'res',function(){
+					// vm.loadingShow = false;
+					if(vm.res.success){
+						if(vm.res.result !== null){
+							MessageBox.alert('添加房子成功', vm.config.house_domain.domain).then( action =>{
+								vm.$router.push("/myHouse")
+							})
+						}else{
+							MessageBox.alert('添加房子失败', vm.config.house_domain.domain).then( action =>{
+								vm.$router.push("/myHouse")
+							})
+						}
+					}else{
+						MessageBox.alert(vm.res.message).then( action =>{
+							vm.$router.push("/addHouse")
+						})
+					}
+				})
 	  	}
 	
 	  }

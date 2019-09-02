@@ -65,7 +65,6 @@
 		  }
 	  },
 	  mounted(){
-	  	this.common.checkRegisterStatus();
 	  },
 	  methods:{
 	  	 show(){
@@ -73,15 +72,29 @@
 	  	 	vm.receiveData.scan(vm,wx,'number')
 	  	 },
 	  	 submit(){//判断是否为正确账单号
-
 	  	 	var reg = /^\d{18}$/
-	  	 	if(reg.test(this.number)){//为数字即通过
-	  	 		this.$router.push('/bindHouse/' + this.number);
+			if(reg.test(this.number)){//为数字即通过
+			   	vm.house()
 	  	 	}else{
 	  	 		MessageBox.alert('请输入正确账单号', vm.config.house_domain.domain);
 			   }
 		
-	  	 }
+		   },
+		   house() {
+			let url = '/hexiehouse?stmtId='+ vm.number;
+			vm.receiveData.getData(vm,url,'response',function(){
+				if(vm.response.success) {
+						if(vm.response.result== null) {
+							alert('未查询到该房屋')
+						}else {
+	  	 					vm.$router.push('/bindHouse/' + vm.number);
+						}
+				}else {
+					alert(vm.response.message==null?'未查询到该房屋':vm.response.message)
+				}
+				
+			})
+		   }
 	  }
 	}
 </script>

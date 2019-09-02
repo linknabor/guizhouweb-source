@@ -186,7 +186,6 @@ export default {
        vm=this;
    },
    mounted() {
-        vm.common.checkRegisterStatus()
 
     let url = location.href.split('#')[0];
     vm.receiveData.wxconfig(vm,wx,['previewImage'],url);

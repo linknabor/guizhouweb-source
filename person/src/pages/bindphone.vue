@@ -86,8 +86,10 @@ export default {
             a = "userInfo",
             i = null,
             e = function(n) {
-                if(n.result!=null) {
-                    vm.user = n.result;
+                if(n.success&&n.result==null) {
+                       reLogin();
+                }else {
+                     vm.user = n.result;
                      vm.oriPhone = vm.user.tel;
                 }
                 

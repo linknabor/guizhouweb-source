@@ -93,7 +93,6 @@
 	  	vm = this;
 	  },
 	  mounted(){//查看房子列表
-	  	this.common.checkRegisterStatus();
 	  	vm.showList();
 	  },
 	  data(){

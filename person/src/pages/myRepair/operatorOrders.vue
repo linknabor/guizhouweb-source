@@ -52,7 +52,6 @@ export default {
        
    },
    mounted() {
-        vm.common.checkRegisterStatus()
        vm.query();
    },
 

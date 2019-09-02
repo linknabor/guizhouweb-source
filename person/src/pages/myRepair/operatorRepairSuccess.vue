@@ -87,7 +87,6 @@ export default {
        vm=this;
    },
    mounted() {
-        vm.common.checkRegisterStatus()
        vm.queryOrder();
    },
    methods: {

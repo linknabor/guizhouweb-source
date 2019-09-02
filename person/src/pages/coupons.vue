@@ -100,7 +100,6 @@ export default {
     //                 vm.receiveData.getData(vm,url,'Data',function(){
     //             });
     
-       vm.common.checkRegisterStatus()
        this.validCoupons();
    },
 

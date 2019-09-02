@@ -64,7 +64,6 @@ a{color: #000;opacity: 0.7;}
                 </div> 
             </swiper-slide>
             <!-- <div class="swiper-pagination" slot="pagination"></div>        -->
-
        	</swiper>
 		   
 		</div>
@@ -181,7 +180,7 @@ a{color: #000;opacity: 0.7;}
 	let vm;
 	import foot from '../components/footer.vue';
 	import {swiper,swiperSlide} from 'vue-awesome-swiper';
-	 import 'swiper/dist/css/swiper.css'
+	import '../../node_modules/swiper/dist/css/swiper.css'
 	export default {
 		components:{
 			swiper,
@@ -222,7 +221,6 @@ a{color: #000;opacity: 0.7;}
 			
 		},
 		mounted(){
-			// this.common.checkRegisterStatus()
 			// vm.initSession4Test();
 			vm.queryUserInfo();
 			vm.tab();
@@ -232,8 +230,8 @@ a{color: #000;opacity: 0.7;}
 			//模仿线上用户信息
 			//105/747/384
 		  	initSession4Test(){
-		  		let _this = this;
-				let url = '/initSession4Test/105';
+		  		let _this = this;	
+				let url = '/initSession4Test/79111';
 				_this.receiveData.getData(_this,url,'Data',function(){
 					// vm.tab();
 				});
@@ -247,13 +245,15 @@ a{color: #000;opacity: 0.7;}
 				});
 			},
 		queryUserInfo() {
-			this.common.invokeApi("GET","userInfo",null,null, function(n) {
-				console.log(JSON.stringify(n));
-				vm.city=n.result.city;
-				vm.xiaoquName=n.result.xiaoquName;
-				vm.userSectId = n.result.sect_id;
-				// vm.tab();
-			},function(){
+			this.common.invokeApi("GET","userInfo",null,null
+			, function(n) {
+				if(n.success&&n.result==null) {
+					reLogin();
+				}else {
+					vm.userSectId = n.result.sect_id;
+					// vm.tab();
+				}
+			},function(n){
 			})
 		},
 		tab(){

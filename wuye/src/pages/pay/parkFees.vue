@@ -85,7 +85,6 @@
 		  	vm = this;
 		},
 		mounted(){
-			this.common.checkRegisterStatus();
 			//微信配置
 		  	let url = location.href.split('#')[0]
 		  	vm.receiveData.wxconfig(vm,wx,['scanQRCode'],url);

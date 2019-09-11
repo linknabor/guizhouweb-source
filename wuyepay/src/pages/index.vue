@@ -10,8 +10,6 @@
                             <p class="fr">{{area}} m<sup style="font-size:0.2rem">2</sup></p>
                         </div>
                 </div>
-          
-
             <!-- 费用列表 -->
 			<dl v-for="item in feeList" class="fee-list ">
 				<dt class="ov">
@@ -23,7 +21,6 @@
 					<p class="detail-price fr">{{i.fee_price}}</p>
 				</dd>
 			</dl>
-
             <!-- 优惠选项 -->
 			<ul class="discount">
 				<li class="ov" @click="uptonList" >
@@ -35,12 +32,40 @@
 					<span class="fr bigfont">￥{{reduceAmt}} </span>
 				</li>
 			</ul>
-
             <!-- 支付金额 -->
 			<div class="payCount">
 				<p class="fl">支付金额</p>
 				<p class="fr bigfont">￥{{count}}</p>
 			</div>
+
+			<!-- 发票 v-show="yins"-->
+			<form class="invoice" v-show="show_invoice=='1'">
+				<div class="form-row">
+					是否需要发票:&nbsp;&nbsp;
+					 <input  type="radio" id="yes" value="1" v-model="needInvoice">
+  					 <label for="yes" class="ty-label">是</label>
+					 <input type="radio" id="no" value="0" v-model="needInvoice">
+  					 <label for="no" class="ty-label">否</label>
+				</div>
+				<div v-if="needInvoice == '1'" class="form-row">
+					申请发票类型:&nbsp;&nbsp;
+					 <input  type="radio" id="person" value="01" v-model="invoice_title_type">
+  					 <label for="01" class="ty-label">个人</label>
+					   <!-- show_com_flag  判断公司是否允许开具公司开票 -->
+					 <input v-show="show_com_flag!=='0'" type="radio" id="company" value="02" v-model="invoice_title_type">
+  					 <label v-show="show_com_flag!=='0' " for="02" class="ty-label">公司</label>
+				</div>
+				<div class="form-row" v-show="invoice_title_type == '02'&&needInvoice=='1' ">
+					<!-- <mt-field label="发票抬头" placeholder="发票抬头" v-model="invoice_title"></mt-field> -->
+					<label class="t-label">发票抬头: <input type="text" placeholder="发票抬头" v-model="invoice_title" class="t-input"> </label>
+				</div>
+				<div class="form-row" v-show="invoice_title_type == '02'&&needInvoice=='1' ">
+					<!-- <mt-field label="公司税号" placeholder="公司税号" v-model="credit_code"></mt-field> -->
+					<label class="t-label">公司税号: <input type="text" placeholder="公司税号" v-model="credit_code" class="t-input"> </label>
+				</div>
+				<h4 class="qufapiao" v-show="show_invoice_flag==0">支付后请前往物业管理处领取发票</h4>
+				<h4 class="qufapiao" v-show="show_invoice_flag==1">申请的电子发票预计在3个工作日内通过短信发送至您手机上,请注意查收</h4>
+			</form>
 
 			<div class="card fs15 item" >
 				<div class="ov fs13 " >
@@ -100,31 +125,31 @@ export default {
 			addr:'',//地址
             area:'',//面积
             feeList:'',//费用列表
-            uptonData:[],
+			uptonData:[],
+			allCoupons:[],
             uptonNumber:0,//优惠劵数量
             couponId:'',//优惠券id
             uptonAmount:'未使用',
             upronAmountNumber:0,////优惠券金额 数量
             mianBill:'0',//优惠的账单id
             mianAmt:0.00,
-            show_invoice_flag:'0',
+			show_invoice_flag:'0',
+			show_invoice:'',//是否默认开票0 1
             show_com_flag:'0',//是否允许开具公司发票
             reduceAmt:'0',//减免合计
             count:0,//实际支付金额
-            needInvoice:'yes',//是否需要发票
             routeParams:{
 					billIds : this.$route.query.billIds,//id 集合
 					stmtId:this.$route.query.stmtId,//扫码数据
 					totalPrice:this.$route.query.totalPrice,//合计金额
 					reduceMode:this.$route.query.reduceMode,//减免方式
-                },
-            invoice_title_type:'01',//公司或个人    
+				},
+            needInvoice:'1',//是否需要发票
+            invoice_title_type:'',//个人01或公司02 
             invoice_title:'',//发票抬头
 			credit_code:'',//公司税号
-			invoiceType:'person',//公司或个人
 			payAddr:"",
 			bind_switch:"1",
-			tel:cookie.get('tel')
 
        };
    },
@@ -137,20 +162,23 @@ export default {
        vm.calcReduceAmt()
    },
    watch:{
-			needInvoice:function(){
-				if(this.needInvoice == 'yes'){
-					vm.invoice_title_type='01'
-					console.log('yes')
-				}else{
-					console.log('no')
-					vm.invoice_title_type=''
-				}
-			},
+		invoice_title_type() {
+			if(this.invoice_title_type == '01') {
+				this.invoice_title='';
+				this.credit_code='';
+			}
+		},
+		needInvoice() {
+			if(this.needInvoice=='0') {
+				this.invoice_title_type =''
+				this.invoice_title='';
+				this.credit_code='';
+			}
+		}
 			
 		},
    mounted() {
 	//    this.initSession4Test();
-
 		this.common.checkRegisterStatus();
 			
        this.getBillDetail();
@@ -158,9 +186,8 @@ export default {
    },
 
    methods: {
-
        	initSession4Test(){
-            let url = '/initSession4Test/105';
+            let url = '/initSession4Test/79165';
                 vm.receiveData.getData(vm,url,'Data',function(){
             });
         },
@@ -192,7 +219,11 @@ export default {
 			//    console.log(vm.data)
                if(vm.data.result !== null) {
                     vm.show_com_flag=vm.data.result.show_com_flag;
-                    vm.show_invoice_flag = vm.data.result.show_invoice_flag;
+					vm.show_invoice_flag = vm.data.result.show_invoice_flag;
+					vm.show_invoice=vm.data.result.show_invoice;
+					if(vm.show_invoice=='1'){
+						vm.invoice_title_type='01';
+					}
                     let useDate = vm.data.result.fee_data[0];
                     if(vm.data.result.mianBill) {
                         vm.mianBill = vm.data.result.mianBill;
@@ -224,11 +255,23 @@ export default {
 	  			let url3 = '/getCouponsPayWuYe';
 	  			vm.receiveData.getData(vm,url3,'uptonDatas',function(){
 	  				vm.uptonData = vm.uptonDatas.result;
-	  				vm.uptonNumber = vm.uptonDatas.result.length;
+					vm.allCoupons=vm.uptonDatas.result;
+					vm.filterCouponByAmount();
 	  			})
 	  		});
        },
-    
+		//使用filterCouponByAmount进行金额过滤
+		filterCouponByAmount() {
+			var c=[];
+			for(var i=0;i<vm.allCoupons.length;i++) {
+				if(vm.allCoupons[i].usageCondition<=vm.count) {
+					c.push(vm.allCoupons[i])
+				}
+			}
+			vm.uptonData=c;
+			vm.uptonNumber = c.length;
+
+		},
         //点击优惠券
        uptonList() {
            if(vm.uptonNumber == 0){//无优惠券
@@ -301,10 +344,18 @@ export default {
 					
        },
        wechatPay() {
-
-    
-                $('.box-bg').css("display",'block');
-            let url = "/getPrePayInfo?billId="+vm.routeParams.billIds+"&stmtId="+vm.routeParams.stmtId+"&couponUnit="+vm.upronAmountNumber+"&couponNum=1&couponId="+vm.couponId+"&mianBill="+vm.mianBill+"&mianAmt="+vm.mianAmt+"&reduceAmt="+vm.reduceAmt;
+		   	if(this.invoice_title_type=="02"){
+				if(this.invoice_title==""){
+					alert("请填写发票抬头信息");
+					return;
+				};
+				if(this.credit_code==""){
+					alert("请填写发票公司税号信息");
+					return;
+				}
+			};
+            $('.box-bg').css("display",'block');
+            let url = "/getPrePayInfo?billId="+vm.routeParams.billIds+"&stmtId="+vm.routeParams.stmtId+"&couponUnit="+vm.upronAmountNumber+"&couponNum=1&couponId="+vm.couponId+"&mianBill="+vm.mianBill+"&mianAmt="+vm.mianAmt+"&reduceAmt="+vm.reduceAmt+"&invoice_title_type="+this.invoice_title_type+"&credit_code="+this.credit_code+"&invoice_title="+this.invoice_title;
             
             this.axios.post(url,{}).then((res) => {
 
@@ -342,11 +393,8 @@ export default {
                                         }
                                      
                                 vm.receiveData.postData(vm,reqUrl,{},'reqUrlData',function(){
-									
 										//跳转
-										// vm.$router.push({path:'/success',query:{'payAddr':Base64.encode(vm.payAddr),'totalPrice':Base64.encode(vm.count),'state':Base64.encode(vm.tel)}})
 											window.location.href = vm.config.wuye_zhifu.url;
-								
 					  			})	
                               },
                               

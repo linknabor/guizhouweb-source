@@ -13,15 +13,8 @@ const router= new Router({
       meta:{
         title:'缴费详情'
       }
-    },
-    {
-      path: '/success',
-      name: 'success',
-      component: Success,
-      meta:{
-        title:'缴费成功'
-      }
     }
+
   ]
 });
 router.beforeEach((to, from, next) => {

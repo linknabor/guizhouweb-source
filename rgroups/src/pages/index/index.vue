@@ -1,5 +1,6 @@
 <template>
    <div >
+       <div id="div12" >
         <!-- load -->
 		<div class="load6" id="LoadingBar" v-show="load">
 			<div class="bounce1"></div>
@@ -33,7 +34,7 @@
                             <div class="mt1 ml1" >
                                 <span class="highlight fs20">¥&nbsp;{{rgroup.price}}&nbsp;</span>
                                 <span class="ori-price"><del>¥&nbsp;{{rgroup.oriPrice}}&nbsp;</del></span>
-                                <span class="ml1 product-lefttime" >{{leftTimeStrs(index)}}</span>
+                                <span class=" product-lefttime" >{{leftTimeStrs(index)}}</span>
                             </div>
                         </div>
                          <div class="fr process-left-border" id="processImg">
@@ -45,11 +46,13 @@
             </div>
         </div>
         <div style="height:.5rem;clear:both">&nbsp;</div>
+       </div>
    </div>
 </template>
 
 <script>
 let vm;
+import wx from 'weixin-js-sdk';
 let hasNext=true,isloadPage=false;
 export default {
    data () {
@@ -65,11 +68,16 @@ export default {
        vm=this;
        },
    mounted() {
-        vm.common.checkRegisterStatus()
-        // vm.initSession4Test();
-       vm.updateLeftTime();//计时器
-        vm.query();
 
+         let url = location.href.split('#')[0];
+        vm.receiveData.wxconfig(vm,wx,['onMenuShareTimeline','onMenuShareAppMessage'],url);
+
+        vm.initShareSetting();
+        
+        // vm.initSession4Test();
+       vm.query();
+       vm.updateLeftTime();//计时器
+        
        window.addEventListener('scroll',vm.getscroll);
 
    },
@@ -82,6 +90,14 @@ export default {
    },
 
    methods: {
+        initShareSetting(){
+            var title = "社区团购";
+            var link=vm.basePageUrlpay+"guizhourgroups.html";
+            var img=vm.basePageUrlpay+"guizhou_rgroups/share_tuan.jpg";
+            var desc=vm.config.newname+"为您提供更好的服务！";
+            vm.common.initShareConfig(title,link,img,desc,wx);
+        },
+        
         //模仿线上用户信息
             // 105/747/384
         initSession4Test(){
@@ -90,16 +106,20 @@ export default {
                 });
         },
        query() {
-        let url ="rgroups/"+vm.page;
-                    vm.receiveData.getData(vm,url,'Data',function(){
-                        if(vm.Data.success) {
-                               vm.rgroups = vm.Data.result;
-                               vm.load=false;
-                             vm.page++;    
-                        }else {
-                            vm.load=false;
-                        }
-                });
+        let n = "GET",
+            a = "rgroups/"+vm.page,
+            i = null,
+            d=function() { },
+            e = function(n){
+                 vm.rgroups = n.result;
+                 vm.load=false;
+                 vm.page++;  
+                
+            },
+            r = function(){
+                vm.load=false;
+            };
+           this.common.invokeApi(n,a,i,d,e,r);
        },
        //canvas 画板
        drawP(){
@@ -290,7 +310,7 @@ export default {
     text-align: center;
     position: fixed;
     z-index: 1002;
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .load6>div {
@@ -396,14 +416,8 @@ export default {
     overflow: hidden
 }
 .pl05 {
-    padding-left: 0.2rem;
+    padding-left: 0.1rem;
 }
-
-.ml1 {
-    margin-left: .3rem;
-    margin-top: .2rem;
-}
-
 .highlight {
     color: #ff8a00;
 }
@@ -413,9 +427,12 @@ export default {
 }
 .product-lefttime {
     color: #666666;
-    padding-left: 10px;
+    /* padding-left: 10px; */
 }
-
+.ml1 {
+    margin-left: .1rem;
+    margin-top: .2rem;
+}
 .process-left-border {
     border-left: #e5e2dd 1px solid;
     z-index: 1;

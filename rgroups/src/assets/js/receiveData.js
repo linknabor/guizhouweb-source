@@ -32,7 +32,8 @@ let receiveData = {
                 console.log('fail', err);
         });
     },
-    
+
+
     /*
      * 通过axios获取API数据,并将请求回来列表数据，自动装载到Vue实例模板中
      * @param  {objec} vm     [Vue实例]

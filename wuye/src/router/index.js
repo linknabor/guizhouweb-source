@@ -75,9 +75,17 @@ const router= new Router({
       }
     },
     {
-      path: '/butler',
-      name: 'butler',
-      component: resolve =>require(['@/pages/butler/index'],resolve),
+      path: '/maintain',
+      name: 'maintain',
+      component: resolve =>require(['@/pages/butler/maintain'],resolve),
+      meta:{
+        title: ''
+      }
+    },
+    {
+      path: '/mysteward',
+      name: 'mysteward',
+      component: resolve =>require(['@/pages/butler/mysteward'],resolve),
       meta:{
         title: '管家服务'
       }
@@ -91,11 +99,19 @@ const router= new Router({
       }
     },
     {
-      path:'/publish',
-      name:'publish',
-      component:resolve =>require(['@/pages/repairs/index'],resolve),
+      path:'/repair',
+      name:'repair',
+      component:resolve=> require(['@/pages/repairs/repair'],resolve),
       meta:{
-        title: ''
+      title:''
+      }
+    }, 
+    {
+      path:'/submitSuccess',
+      name:'submitSuccess',
+      component:resolve=> require(['@/pages/repairs/submitSuccess'],resolve),
+      meta:{
+      title:''
       }
     },
     {

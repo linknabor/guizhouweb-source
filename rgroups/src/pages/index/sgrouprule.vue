@@ -73,7 +73,7 @@ export default {
        };
    },
    mounted() {
-        vm.common.checkRegisterStatus()
+        // vm.common.checkRegisterStatus()
    },
 
    components: {},

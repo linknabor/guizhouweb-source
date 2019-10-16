@@ -1,8 +1,8 @@
 var url=/127|test/.test(location.origin)?'https://test.e-shequ.com':
-    /uat/.test(location.origin)?'https://uat.e-shequ.com':
-    'https://www.e-shequ.com';
+    /uat/.test(location.origin)?'https://uat.e-shequ.cn':
+    'https://www.e-shequ.cn';
 var name='/guizhou';
-var namepay='/pay';
+var namepay='/weixin/pay';
 window.config={
      
     //公共的请求地址
@@ -12,6 +12,8 @@ window.config={
         wuye:url+name+'/weixin/wuye/index.html?v=20162299',
         person:url+name+'/weixin/person/index.html?v=20160229',
         home:url+name+'/weixin/home/index.html?v=20160229',
+        group:url+name+'/weixin/group/onsalesindex.html?v=20160229'
+        
     },
     //现金券
     person_coupons:{
@@ -27,15 +29,15 @@ window.config={
     },
     //报修
     person_repair:{
-        url:url+name+'/weixin/wuye/index.html?state=123#/butler?category=2',//报修
+        // url:url+name+'/weixin/wuye/index.html?state=123#/repair?projectId=1',//报修
         fuwux:url+name+'/weixin/wuye/index.html?state=123#/butler?category=0',//服务需求 
-        butler:url+name+'/weixin/wuye/index.html?state=123#/butler?category=1',//建议
+        butler:url+name+'/weixin/wuye/index.html?state=123#/mysteward',//建议
     },
      //物业绑定房子
      house_domain: {
-        domain:/127|test/.test(location.origin)?'test.e-shequ.com':
-        /uat/.test(location.origin)?'at.e-shequ.com':
-        'www.e-shequ.com'
+        domain:/127|test/.test(location.origin)?'test.e-shequ.cn':
+        /uat/.test(location.origin)?'at.e-shequ.cn':
+        'www.e-shequ.cn'
     },
     //物业支付跳转
     wuye_payment:{

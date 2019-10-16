@@ -12,7 +12,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static', //放置静态文件的目录
     assetsPublicPath: './', //放置静态文件的路径
-    productionSourceMap: true,
+    productionSourceMap: false,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
@@ -33,7 +33,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         // '/tabNav':{
-        //     target:'https://www.e-shequ.com/dhzj3/wechat/hexie/wechat/',
+        //     target:'http://192.168.0.11',
         //     changeOrigin:true,
         //     pathRewrite:{
         //         '^/tabNav':''

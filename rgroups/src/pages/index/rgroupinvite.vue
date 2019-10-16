@@ -76,12 +76,12 @@
                 更多团购
             </span>
             <span  class="fl" 
-                style="height:40px;line-height:40px;color:#fff; width:64%;background-color:#ff8a00;text-align: center;font-size:20px;"  @click="goGroupProduct()"   ms-class-useless="rule.leftSeconds < 0">
+                style="height:40px;line-height:40px;color:#fff; width:64%;background-color:#ff8a00;text-align: center;font-size:20px;"  @click="goGroupProduct()"   :class="{useless:rule.leftSeconds < 0}">
                 马上参团
             </span>
         </div>
         <div v-if="share_page=='1'">
-            <div style="position: fixed;bottom:5px;left:5px;right:5px;text-align:center;background-color: #ff8600;height:40px;color:#ffffff;font-size: 16px;line-height: 40px">
+            <div style="position: fixed;bottom:5px;left:5px;right:5px;text-align:center;background-color: #ff8600;height:40px;color:#ffffff;font-size: 16px;line-height: 40px;z-index: 10000">
                 点击右上方分享，邀请好友一起参与
             </div>
         </div>
@@ -129,12 +129,10 @@ export default {
        vm=this;
    },
    mounted() {
-       vm.common.checkRegisterStatus();
+    //    vm.common.checkRegisterStatus();
         let url = location.href.split('#')[0];
         vm.receiveData.wxconfig(vm,wx,['onMenuShareTimeline','onMenuShareAppMessage'],url);
-                // let url ='/initSession4Test/105';
-                //     vm.receiveData.getData(vm,url,'Data',function(){
-                // });
+           
         vm.query();
    },
 
@@ -170,10 +168,10 @@ export default {
     },
     initShareSetting (product) {
         var title = vm.rule.name;
-		var link=vm.config.gotoGroupDetail+"ruleId="+vm.ruleId;
+		var link=vm.basePageUrlpay+"guizhourgroups.html?/#/rgroupinvite?ruleId="+vm.ruleId;
 		var img=product.smallPicture;
-		var desc="我在贵州幸福家园参与了一个"+vm.rule.name+"的团购，大家一起来参与吧";
-		vm.common.initShareConfig(title,link,img,desc)
+		var desc="我在"+vm.config.newname+"参与了一个"+vm.rule.name+"的团购，大家一起来参与吧";
+		vm.common.initShareConfig(title,link,img,desc,wx)
     },
     //剩余时间
     updateLeftTime() {
@@ -203,7 +201,7 @@ export default {
         vm.$router.push({path:'/sgrouprule'})
     },
     golist() {
-        location.href=vm.config.rgrops_url.url;
+        location.href=this.basePageUrlpay+'guizhourgroups.html?state=123';
     },
     goGroupProduct() {
         vm.$router.push({path:'/rgroupdetail',query:{'ruleId':vm.ruleId}})
@@ -298,5 +296,8 @@ export default {
 .ori-price2 {
     font-size: 14px;
     color: #999999
+}
+useless {
+    background-color: #D7D5D4;
 }
 </style>

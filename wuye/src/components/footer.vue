@@ -3,7 +3,7 @@
   left: 50%;-webkit-transform: translate3d(-50%,0,0);transform: translate3d(-50%,0,0);
   overflow: hidden;background-color: #fff;border-top: #eceded;
   -webkit-box-shadow: 0 0 4px rgba(0,0,0,.2);box-shadow: 0 0 4px rgba(0,0,0,.2)}
-.footer li {float: left;width: 50%;text-align: center;height: 100%}
+.footer li {float: left;width:25%;text-align: center;height: 100%}
 .footer a {color: #777;font-size: 14px}
 .footer a:hover,.footer a:focus {color: #666;font-size: 18px}
 .footer a.active {color: #ff8a00}
@@ -13,6 +13,7 @@
     background-repeat: no-repeat;}
 .footer_wuye_selected{background-image: url('../assets/images/common/footer_shequ_selected.png');}
 .footer_zenzhi{background-image: url('../assets/images/common/footer_zenzhi.png');}
+.footer_temai{background-image: url('../assets/images/common/icon_shopping.png');}
 .footer_person{background-image: url('../assets/images/common/footer_wode.png');}
 </style>
 
@@ -26,11 +27,16 @@
 			              	<i class="footer_logo footer_wuye_selected"></i>社区
 			            </a>
 			        </li>
-					<!-- <li>
+					<li>
 						<a :href="this.config.footer.home" class="nav-controller ">
-						<i class="footer_logo footer_zenzhi"></i>生活
+						<i class="footer_logo footer_zenzhi"></i>增值
 						</a>
-					</li> -->
+					</li>
+				   <li>
+						<a :href="this.config.footer.group" class="nav-controller">
+						<i class="footer_logo footer_temai"></i>集市
+                        </a>
+                   </li>
 			        <li>
 			            <a :href="this.config.footer.person" class="nav-controller">
 			              <i class="footer_logo footer_person"></i>我的

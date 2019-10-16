@@ -1,29 +1,25 @@
 var url=/127|test/.test(location.origin)?'https://test.e-shequ.com':
     /uat/.test(location.origin)?'https://uat.e-shequ.com':
     'https://www.e-shequ.com';
-var name='/baofang';
+var name='/guizhou';
 var namepay='/pay';
-window.config={
-    //
-        baseurl:url,
-    //公共的请求地址
-         URL:url+name+'/wechat/hexie/wechat/',
-    //公共的底部跳转
+
+window.config = {
+    newname:'贵州幸福家园',
+    URL:url+name+'/wechat/hexie/wechat/',
     footer:{
-        wuye:url+name+'/weixin/wuye/index.html?v=20162299',
-        person:url+name+'/weixin/person/index.html?v=20160229',
-        home:url+name+'/weixin/home/index.html?v=20160229'
+        wuye:url+name+'/weixin/wuye/index.html',
+        person:url+name+'/weixin/person/index.html',
+        home:url+name+'/weixin/home/index.html',
+        group:url+name+'/weixin/group/onsalesindex.html'
     },
-    // 集市
-    group_onsalesindex:{
-        url:url+name+'/weixin/group/onsalesindex.html'
-    },
-    //团购
-    rgrops_url :{
-        url:url+namepay+'/guizhourgroups.html?v=20160229'
-    }
-
    
+     //wuye支付成功
+     wuye_zhifu:{
+        url:url+name+'/weixin/wuye/index.html?state=123#/payEnquiry'
+    },
+    rgrops_url :{
+        url:url+namepay+'/guizhourgroups.html?state=123'
+    },
 }
-
 export default config

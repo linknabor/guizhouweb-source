@@ -31,6 +31,7 @@
                 <div class="product-detail-name fs16">{{rule.name}}</div>
                 <div style="width: 100%;height:30px;">
                     <div class="highlight fs22 fl three_div">¥&nbsp;{{rule.price}}&nbsp;</div>
+                    <!-- <div class="ori-price2 fl three_div" style="margin-top:3%"><span>满<span class="highlight" >{{rule.groupMinNum}}</span>人开通</span></div> -->
                     <div class="highlight fl fs14 three_div" style="padding-top:8px">{{rule.discount}}&nbsp;</div>
                     <div class="ori-price2 three_div"  style="padding-top:8px">运费&nbsp;&nbsp;<span class="highlight">¥{{rule.postageFee}}</span></div>
                 </div>
@@ -55,16 +56,16 @@
 	    </div>
 
         <div class="rgroup-info bb3" id="products">
-            <div class="fl " style="margin-top:23px;margin-left:15px;color:#999;font-size: 14px;">团购进度</div>
+            <div class="fl " style="margin-top:23px;margin-left:15px;color:#999;font-size: 14px;">报名进度</div>
             <div class="fr plr10" style="border-left:#d5d59d 1px solid ;"  id="processImg">
               <canvas width="70px" height="70px" ></canvas>
             </div>
-            <div class="fr" style="margin-top:23px;color:#333;font-size: 15px;margin-right: 15px;">已参团份数<span style="color:#FF9933;font-size:15px;margin-left: 5px;">{{rule.currentNum}}</span></div>
+            <div class="fr" style="margin-top:23px;color:#333;font-size: 15px;margin-right: 15px;">已报名人数<span style="color:#FF9933;font-size:15px;margin-left: 5px;">{{rule.currentNum}}</span></div>
 	    </div>
 
         <div class="p15 mb15">
             <div class="section-title" style="padding-left:0px;padding-top:0px;"  @click="toggleDetail">
-                商品详情
+                报名规则
                 <i class="icon more-icon align-right fr" :class={topIcon:showDetail}></i>
             </div>
             <ul class="" style="padding-top: 3px;">
@@ -85,9 +86,10 @@
                 更多团购
             </span>
             <span  class="fl" 
-                style="height:40px;line-height:40px;width:64%;background-color:#ff8a00;text-align: center;font-size:15px;"  @click="buy" ms-class-useless="rule.leftSeconds < 0">
+                style="height:40px;line-height:40px;width:64%;background-color:#ff8a00;text-align: center;font-size:15px;"  @click="buy" :class="{useless:rule.leftSeconds < 0}">
                 马上参团
             </span>
+          
     	</div>
 
    </div>
@@ -96,6 +98,7 @@
 <script>
 let vm;
 import {swiper,swiperSlide} from 'vue-awesome-swiper';
+import wx from 'weixin-js-sdk';
 export default {
    data () {
        return {
@@ -134,20 +137,22 @@ export default {
        vm=this;
    },
    mounted() {
-        this.common.checkRegisterStatus()
-    //    vm.read();
-     vm.query()
+        // this.common.checkRegisterStatus()
+         let url = location.href.split('#')[0];
+        vm.receiveData.wxconfig(vm,wx,['onMenuShareTimeline','onMenuShareAppMessage'],url);
+        
+       vm.read();
    },
    updated(){
        vm.drawP()
    },
 
    methods: {
-        // read() {
-        //     if(vm.ruleId!=""){
-        //         vm.query()
-        //     }
-        // },
+        read() {
+            if(vm.ruleId!=""){
+                vm.query()
+            }
+        },
         query() {
             let url ="getRgroupRule/"+vm.ruleId;
                 vm.receiveData.getData(vm,url,'Data',function(){
@@ -169,7 +174,9 @@ export default {
                 vm.receiveData.getData(vm,url,'res',function(){
                     if(vm.res.success) {
                         if(vm.res.result) {
-                            vm.product = vm.res.result;     
+                            vm.product = vm.res.result;   
+			                vm.common.initShareConfig(vm.rule.name,vm.basePageUrlpay+"guizhourgroups.html?/#/rgroupdetail?ruleId="+vm.ruleId,vm.product.smallPicture,"快来参加"+vm.config.newname+"的优惠商品抢购吧",wx);
+
                         }
                     }else {
                         alert(vm.res.message==null ?"获取产品信息失败！":vm.res.message);
@@ -272,16 +279,15 @@ export default {
         toggleDetail() {
             vm.showDetail = !vm.showDetail;
         },
-        //团购规则
+        // //团购规则
         gotosgrouprulr() {
             vm.$router.push({path:'/sgrouprule'})
         },
         //更多商品
         goclassify() {
-            // vm.$router.push({path:'/'})
-            location.href=vm.config.rgrops_url.url+"type="+vm.rule.productType;
+            location.href=vm.basePageUrlpay+"guizhourgroups.html?type="+vm.rule.productType;
         },
-        //马上参团
+         //马上参团
         buy() {
              if(vm.rule.id) {
                  vm.$router.push({path:'/buy',query:{type:'4',ruleId:vm.rule.id}})
@@ -481,5 +487,8 @@ export default {
     margin-top: 25px;
     margin-bottom: 25px;
     border-radius: 6px;
+}
+.useless {
+    background-color: #D7D5D4;
 }
 </style>

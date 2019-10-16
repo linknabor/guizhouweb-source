@@ -22,7 +22,9 @@ import './assets/js/rem'
 import './assets/font-icon/font_a2awfrh3fuq/iconfont.css'
 import cookie from 'js-cookie'
 
-// import common from './assets/js/common'
+
+//本地使用
+// import  common from './assets/js/common'
 // import config from './assets/js/config'
 
 Vue.prototype.config = config;
@@ -49,7 +51,6 @@ var axiosInstance = axios.create({
         'Accept': 'application/json',
 
     },
-    // baseURL: 'https://www.e-shequ.com/qibao/wechat/hexie/wechat/',
     baseURL: Vue.prototype.config.URL,
     withCredentials:true,
     transformResponse: [function (data) {//数据转换

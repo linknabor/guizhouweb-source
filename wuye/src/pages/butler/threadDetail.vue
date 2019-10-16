@@ -11,22 +11,22 @@
         <div class="ov pl15 pr15">
             <!-- 图片 -->
 		<div class="" v-for="(thumbnailurl,index) in thumbnailurls" >
-                <div class="ov pb15 fs14" @click="viewSrcImg(thread.threadId,index)">
+                <div class="ov pb15 fs14" @click="viewSrcImg(thread.threadId,index,0)">
                     <img class="fl attach-picture" :src="thumbnailurl" />
                 </div>
         </div>
 
         </div>
-        <div class="ov pl15 pb15 fs13" style="color: #3b3937;word-break: break-all;word-wrap: break-word">{{thread.threadContent}}</div>
+        <div class="ov pl15 pb15 fs13" style="color: #3b3937;word-wrap:break-word;overflow:hidden;">{{thread.threadContent}}</div>
         <div class="ov pl15 pb15 fs13 fl" style="color: #a6937c; line-height: 23px">
-            <img style="width: 13px; height: 13px;" src="../../assets/images/butler/icon_time_gray.png"/>&nbsp;{{thread.formattedDateTime}}
+            <img style="width: 13px; height: 13px;" src="../../assets/images/common/icon_time_gray.png"/>&nbsp;{{thread.formattedDateTime}}
         </div>
         <div class="avatar-wrap rel ov fr" v-show="thread.isThreadOwner == 'true'">
             <div class="fs13 pr15" style="color: #a6937c; text-align: right; line-height: 23px" @click="delThread">删除</div>
         </div>
         <div class="pt15 divider">&nbsp;</div>
         <!-- -------- -->
-        <div id="total_comments" class="comments_title comment-lite-divider">
+        <div style="padding-bottom: 5px;" id="total_comments" class="comments_title comment-lite-divider">
             <div class="fl" style="line-height: 15px; color: #888">评论</div>
         </div>
 
@@ -42,8 +42,7 @@
                     <div class="preview_img_layer" >
                         <!-- v-for="(items,index) in comment.previewLink" -->
                         <div v-for="(items,indexc) in comment.previewLink">
-                             <!-- @click="viewSrcImg(comment.commentId,indexc,0);" -->
-                            <div class="sub_img_layer" >
+                            <div class="sub_img_layer" @click="viewSrcImg(comment.commentId,indexc,1);" >
                                 <img class="preview_img" :src="items" />
                                 <!-- <img class="preview_img" src="../../assets/bg_nohouse.jpg" alt=""> -->
                             </div>
@@ -51,7 +50,7 @@
                     </div>
                     <!-- ------------ -->
                     <div style="color: #888;" class="fl15 fs12 pt15 fl">
-                        <img style="width: 12px; " src="../../assets/images/butler/icon_time_gray.png"/>&nbsp;
+                        <img style="width: 12px; " src="../../assets/images/common/icon_time_gray.png"/>&nbsp;
                         {{comment.fmtCommentDateTime}}
                     </div>
                     <div class="pt15 fs12" style="color: #a6937c; float: right;">
@@ -74,12 +73,12 @@
         <div id="imgdis" style="overflow:hidden; margin-top:10px;">
             <div id="pic" class="pic_frame">
                     <!-- <div name='pics' class="fl" style="margin-right:5px;">
-                        <img src="../../assets/images/jf.png" style="height:100px;width:90px;"/>
+                        <img src="../../assets/img/jf.png" style="height:100px;width:90px;"/>
                     </div> -->
             </div>
-            <!-- <div class="pl15 pr15">
+            <div class="pl15 pr15">
                     <div id="add" v-on:click="addPic"   class="add-pic-bg fl pl5"></div>
-            </div> -->
+            </div>
         </div>
         
    </div>
@@ -107,7 +106,7 @@ export default {
    },
    mounted() {
         
-    //    this.wxdata() 
+       this.wxdata() 
        this.getThread();
       
    },
@@ -125,12 +124,8 @@ export default {
                     vm.comments = vm.thread.comments;
                     vm.thumbnailurls = vm.thread.thumbnailLink;
                     vm.updateUnreadComments();
-                    console.log(vm.comments.length)
-                    if(vm.comments.length>0) {
-                          $("#add").hide();
-                    }
                 }else {
-                    //    alert(vm.data.message==null?"获取信息失败，请重试！":vm.data.message);
+                       alert(vm.data.message==null?"获取信息失败，请重试！":vm.data.message);
                 }
             })
        },
@@ -141,12 +136,12 @@ export default {
             })
        },
        //点击图片
-       viewSrcImg(threadId,index) {
-           vm.refreshImages(threadId, index);
+       viewSrcImg(threadId,index,type) {
+           vm.refreshImages(threadId, index,type);
        },
-       refreshImages(threadId, index) {
+       refreshImages(threadId, index,type) {
            //帖子 0   回复  1
-            let url="thread/getImgDetail/"+threadId+"/"+index;
+            let url="thread/getImgDetail/"+threadId+"/"+index+"/"+type;
             vm.receiveData.getData(vm,url,'data',function(){
                 var map = vm.data.result;
                 var url = map.imgUrl;
@@ -230,7 +225,10 @@ export default {
 
         	$("#divconf").css("top", top);
         	$("#divconf").css("left", left);
-			
+			$("#divconf img").css({
+                'width':'100%',
+                'height': 'auto'
+            });
 			})
         },
        //隐藏图片
@@ -244,7 +242,7 @@ export default {
            vm.receiveData.postData( vm, url,{threadId : vm.threadId},'data', function(){
                if(vm.data.success) {
                    alert('删除成功');
-                    vm.$router.push({path:'/butler',query:{'category':'2'}})
+                    vm.$router.push({path:'/mysteward'})
                }else {
                     alert(vm.data.message==null?"发布信息保存失败，请重试！":vm.data.message);
                 } 
@@ -268,18 +266,13 @@ export default {
 				alert("回复内容不为空。");
 				return false;
         }
-         vm.addComment();
-         //限制回复 
-        // if(vm.comments.length<1) {
-            // var pic_length = $("[name='pics']").length;
-            // if(pic_length>0){// 有没有图片上传
-            //     this.uploadToWechat();
-            // }else{
-            //      vm.addComment();
-            // } 
-        // }else {
-        //     alert('不可回复，请重新报修')
-        // }
+
+            var pic_length = $("[name='pics']").length;
+            if(pic_length>0){// 有没有图片上传
+                this.uploadToWechat();
+            }else{
+                 vm.addComment();
+            } 
    },
    //回复发送
     addComment() {
@@ -287,14 +280,18 @@ export default {
         vm.receiveData.postData( vm, url,{
             commentContent : vm.commentContent,
             threadId:vm.threadId,
-            // uploadPicId:vm.uploadPicId
+            uploadPicId:vm.uploadPicId
             },
             'data',
             function(){
                 if(vm.data.success){
                     vm.comments.push(vm.data.result)
                     vm.commentContent="";
-                    // $('#imgdis').hide();
+                      var pic_length = $("[name='pics']").length;
+                     if(pic_length>2){
+                         $("#add").show();
+                     }
+                     $('#pic').empty()
 
                 }else{
                     alert(vm.data.message==null?"发布信息保存失败，请重试！":vm.data.message);
@@ -397,7 +394,6 @@ export default {
                             if(i<pics.length){
                                 upload();
                             }else if(i==pics.length){
-                                // vm.saveThread();
                                  vm.addComment();
                             }
                             
@@ -406,26 +402,7 @@ export default {
                 },50);
             }
             upload();
-    },
-        //  saveThread:function(){
-            //         let url2 = "thread/addThread";
-            //         vm.receiveData.postData(
-            //             vm,
-            //             url2,
-            //             {
-            //                 threadContent:vm.commentContent,
-            //                 uploadPicId:vm.uploadPicId
-            //             },
-            //             'postData',
-            //             function(){
-            //                 if(vm.postData.success) {
-            //                     //  alert("回复成功");
-            //                 }else {
-            //                     alert(vm.postData.message);
-            //                 }
-            //             }
-            //         )
-        // },
+        },
    },
   
    computed: {},
@@ -433,6 +410,10 @@ export default {
 </script>
 
 <style  scoped>
+#divconf img {
+    width:100%;
+    height: auto;
+}
 .ov {
     overflow: hidden;
     padding: 1px;
@@ -446,10 +427,7 @@ export default {
 .pb15 {
     padding-bottom: 15px;
 }
- .img {
-     max-width: 100%;
-    height: auto;
- }
+
 .comment-post-picture {
     width: 42px;
     height: 42px;
@@ -548,6 +526,7 @@ p15 {
 }
 .butt {
      overflow: hidden;
+     margin-top:10px;
 }
 .add-pic-bg {
     background-image: url('../../assets/images/butler/bg.png');

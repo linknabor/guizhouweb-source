@@ -66,7 +66,6 @@ export default {
        vm=this;
    },
    mounted() {
-        vm.common.checkRegisterStatus()
        vm.query();
        vm.notifyPaySuccess();
         let url = location.href.split('#')[0];
@@ -81,20 +80,15 @@ export default {
                         MessageBox.confirm('获取订单信息失败').then(action => {
                                 if(action == 'confirm') {
                                     if(vm.type==4){
-                                        // vm.$router.push({path:'/'}) 	
-                                         location.href=vm.config.rgrops_url.url;	
+                                        vm.$router.push({path:'/'}) 	
                                     }
-                                    // else if(vm.type==3){
-                                    //     if(vm.marketBuy){
-                                    //         location.href=vm.config.footer.home;//跳转home首页
-                                    //     }else{
-                                    //         location.href=vm.config.group_onsalesindex.url;//集市
-                                    //     }
-                                    // }else if(vm.type==5){
-                                    //     location.href=vm.config.footer.home;//跳转home首页
-                                    // }else{
-                                    //      location.href=vm.config.group_onsalesindex.url;//集市   		
-                                    // }
+                                    else if(vm.type==3){
+                                            location.href=vm.config.footer.group;//集市
+                                    }else if(vm.type==5){
+                                        location.href=vm.config.footer.home;//跳转home首页
+                                    }else{
+                                         location.href=vm.config.footer.group;//集市   		
+                                    }
                                 }
                         }).catch(err => {
                                 if(err == 'cancel') {
@@ -108,20 +102,15 @@ export default {
                         MessageBox.confirm('获取订单信息失败').then(action => {
                             if(action == 'confirm') {
                                 if(vm.type==4){
-                                    // vm.$router.push({path:'/'}) 
-                                     location.href=vm.config.rgrops_url.url;		
+                                    vm.$router.push({path:'/'}) 
                                 }
-                                // else if(vm.type==3){
-                                //     if(vm.marketBuy){
-                                //         location.href=vm.config.footer.home;//跳转home首页
-                                //     }else{
-                                //         location.href=vm.config.group_onsalesindex.url;//集市
-                                //     }
-                                // }else if(vm.type==5){
-                                //     location.href=vm.config.footer.home;//跳转home首页
-                                // }else{
-                                //         location.href=vm.config.group_onsalesindex.url;//集市   		
-                                // }     
+                                else if(vm.type==3){
+                                        location.href=vm.config.footer.group;//集市
+                                }else if(vm.type==5){
+                                    location.href=vm.config.footer.home;//跳转home首页
+                                }else{
+                                        location.href=vm.config.footer.group;//集市   		
+                                }     
                             }
                         }).catch(err => {
                             if(err == 'cancel') {
@@ -134,28 +123,21 @@ export default {
         //分享
        initShareSetting(order) {
            var title = order.productName;
-           var baseurl=vm.config.beseurl;
-           var link;
-        //    link=baseurl+"group/onsalesindex.html";
-            link=vm.config.rgrops_url.url;
+           link=vm.config.footer.group;
             if(order.orderType==4){
-                link=vm.config.gotoGroupDetail+"ruleId="+order.groupRuleId;
+                link=vm.basePageUrlpay+"guizhourgroups.html?/#/rgroupinvite?ruleId="+order.groupRuleId;
             }else if(order.orderType==0&&order.groupId!=0){
                 // link=baseurl+"group.html?groupId="+order.groupId;
-                link=vm.config.footer.home;
             }
-            // if(vm.marketBuy){
-            //     link=vm.config.footer.home;
-            // }
             var desc="分享给小伙伴们一个超赞的限时特惠活动！";
             var img=order.productPic;
-            if(order.seedStr!=null&&order.seedStr!=''){
-                title = "贵州幸福家园专享现金券";
-                desc="分享给小伙伴们一个超赞的购物现金券！";
-                img="../../assets/images/group/coupon_share_icon.jpg"
-                // link=baseurl+"coupon.html?o="+order.seedStr;
-            }
-            vm.common.initShareConfig(title,link,img,desc);
+            // if(order.seedStr!=null&&order.seedStr!=''){
+            //     title = vm.config.newname+"专享现金券";
+            //     desc="分享给小伙伴们一个超赞的购物现金券！";
+            //     img=vm.basePageUrlpay+"guizhou_rgroups/coupon_share_icon.jpg"
+            //     link=vm.basePageUrlpay+"guizhourgroups.html/#/coupon?o="+order.seedStr;
+            // }
+            vm.common.initShareConfig(title,link,img,desc,wx);
        },
         //通知
        notifyPaySuccess() {
@@ -169,20 +151,15 @@ export default {
        //更多商品
        goback() {
             if(vm.type==4){
-                // vm.$router.push({path:'/'}) 	
-                 location.href=vm.config.rgrops_url.url;
+                vm.$router.push({path:'/'}) 	
             }
-            // else if(vm.type==3){
-            //     if(vm.marketBuy){
-            //         location.href=vm.config.footer.home;//跳转home首页
-            //     }else{
-            //         location.href=vm.config.group_onsalesindex.url;//集市
-            //     }
-            // }else if(vm.type==5){
-            //     location.href=vm.config.footer.home;//跳转home首页
-            // }else{
-            //         location.href=vm.config.group_onsalesindex.url;//集市   		
-            // }
+            else if(vm.type==3){
+                    location.href=vm.config.footer.group;//集市
+            }else if(vm.type==5){
+                location.href=vm.config.footer.home;//跳转home首页
+            }else{
+                location.href=vm.config.footer.group;//集市   		
+            }
        }
    },
    components: {},

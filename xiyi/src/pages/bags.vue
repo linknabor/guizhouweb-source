@@ -17,9 +17,7 @@
             </div>
         </div>
     </div>
-    <br />
-    <br />
-    <br />
+    <div style="height:50px;"></div>
     <div id="foot">
         <p class="fl paynums">
             <span style="font-size: 19px;">{{totalStr}}</span>&nbsp;&nbsp;/&nbsp;&nbsp;
@@ -47,7 +45,7 @@ export default {
    },
    created() {vm=this},
    mounted() {
-        vm.common.checkRegisterStatus();
+        // vm.common.checkRegisterStatus();
         vm.getInfo();
    },
    methods: {

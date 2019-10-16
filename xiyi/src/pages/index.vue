@@ -27,7 +27,7 @@
 		<div id="foot">
 			<ul class="foot_bar">
 				<li>
-                    <a :href="this.config.footer.home">
+                    <a :href="this.basePageUrl+'/home/index.html'">
                     <span style="font-size:16px">首页</span>
                     </a>
                 </li>
@@ -51,6 +51,7 @@
 <script>
 let vm;
 import {swiper,swiperSlide} from 'vue-awesome-swiper';
+import '../../node_modules/swiper/dist/css/swiper.css'
 import cookie from 'js-cookie'
 export default {
    data () {
@@ -72,7 +73,9 @@ export default {
             washindex:[],
             maincity:{},
             cities:[
-		    	{id:2,name:"上海"}
+                {id:1,name:'全国'},
+                {id:19,name:"上海"},
+                {id:2,name:"北京"}
 		    ],
        };
    },
@@ -80,7 +83,6 @@ export default {
        vm=this;
    },
    mounted() {
-        vm.common.checkRegisterStatus()
         // vm.initSession4Test();
         vm.queryBanner();//获取轮播图
         vm.getMianCity();
@@ -91,7 +93,7 @@ export default {
         //模仿线上用户信息
             // 105/747/384
         initSession4Test(){
-            let url ='/initSession4Test/105';
+            let url ='/initSession4Test/47886';
                     vm.receiveData.getData(vm,url,'Data',function(){
             });
         },

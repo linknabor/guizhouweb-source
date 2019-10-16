@@ -50,7 +50,7 @@ export default {
    },
    created() {vm=this},
    mounted() {
-       vm.common.checkRegisterStatus()
+    //    vm.common.checkRegisterStatus()
       vm.query();
       vm.notifyPayed();
    },
@@ -73,7 +73,7 @@ export default {
             })
        },
        gotoBack() {
-           location.href=vm.config.footer.home;
+           location.href=vm.basePageUrl+'home/index.html';
        }
    },
 

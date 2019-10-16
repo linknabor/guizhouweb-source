@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/pages/index'
-import xiyiList from '@/pages/xiyi_list'
-import xiyiPay from '@/pages/xiyi_pay'
-import Bags from '@/pages/bags'
-import Introduce from '@/pages/introduce'
-import xiyiDetail from '@/pages/xiyi_detail'
-import Success from '@/pages/success'
+// import Index from '@/pages/index'
+// import xiyiList from '@/pages/xiyi_list'
+// import xiyiPay from '@/pages/xiyi_pay'
+// import Bags from '@/pages/bags'
+// import Introduce from '@/pages/introduce'
+// import xiyiDetail from '@/pages/xiyi_detail'
+// import Success from '@/pages/success'
 Vue.use(Router)
 
 let router= new Router({
@@ -14,8 +14,8 @@ let router= new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: Index,
+      name: 'indexs',
+      component: resolve=>require(['@/pages/index'],resolve),
       meta:{
         title:''
       }
@@ -23,7 +23,7 @@ let router= new Router({
     {
       path: '/xiyi_list',
       name: 'xiyi_list',
-      component: xiyiList,
+      component: resolve=>require(['@/pages/xiyi_list'],resolve),
       meta:{
         title:''
       }
@@ -31,7 +31,7 @@ let router= new Router({
     {
       path: '/bags',
       name: 'bags',
-      component: Bags,
+      component: resolve=>require(['@/pages/bags'],resolve),
       meta:{
         title:''
       }
@@ -39,7 +39,7 @@ let router= new Router({
     {
       path: '/xiyi_pay',
       name: 'xiyi_pay',
-      component: xiyiPay,
+      component: resolve=>require(['@/pages/xiyi_pay'],resolve),
       meta:{
         title:''
       }
@@ -47,7 +47,7 @@ let router= new Router({
     {
       path: '/introduce',
       name: 'introduce',
-      component: Introduce,
+      component: resolve=>require(['@/pages/introduce'],resolve),
       meta:{
         title:'服务价目'
       }
@@ -55,7 +55,7 @@ let router= new Router({
     {
       path: '/xiyi_detail',
       name: 'xiyi_detail',
-      component: xiyiDetail,
+      component: resolve=>require(['@/pages/xiyi_detail'],resolve),
       meta:{
         title:''
       }
@@ -63,7 +63,7 @@ let router= new Router({
     {
       path: '/success',
       name: 'success',
-      component: Success,
+      component: resolve=>require(['@/pages/success'],resolve),
       meta:{
         title:''
       }
@@ -75,6 +75,13 @@ let router= new Router({
 ////路由的钩子函数，
 //在每一次路由跳转之前会进入这个方法 to：到哪去  from：从哪来 next() 调用这个方法来完成这个钩子函数
 router.beforeEach((to, from, next) => {
+  var flag;
+  if(to.name != "index"&& to.name!='register') {
+     flag=common.checkRegisterStatus()
+     if(!flag) {
+       return
+     }
+  }
   //动态改变title
   changeTitle(to.meta.title);
   next();

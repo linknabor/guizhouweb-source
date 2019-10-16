@@ -13,7 +13,7 @@
 						<div class="fs14 add_btn_style" v-show="!address.receiveName" style="">选择收货地址</div>
 					</div>
 					<div class="custom-menu-link" style="text-align: left;" v-show="address.receiveName">
-						<a  href="#" class="fs16 addr_detail">
+						<a  href="javascript:void(0)" class="fs16 addr_detail">
 							<span style="color:#3b3937;" >{{address.receiveName}}</span>
 							<span style="margin-left:15px;color:#3b3937;">{{address.tel}}</span>
 							<div class="addr_location">{{address.province}}{{address.city}}{{address.county}}{{address.xiaoquName}}{{address.detailAddress}}</div>
@@ -23,7 +23,8 @@
 				</div>
             <div class="bg_ffffff fs15">
 					<div class="custom-menu-link bb_gray"  id="timetaker">上门取件时间:
-						<input class="date_pppp" id="datetimepicker2" v-model="requireDate">
+                        <!-- readonly 只读 -->
+						<input class="date_pppp" id="datetimepicker2" v-model="requireDate" readonly>
 						<span class="value2_right c666" v-show="!requireDate">请选择时间</span>
 						<span class="value2_right c666">{{requireDate}}</span>
 					</div>
@@ -72,46 +73,66 @@
             </div>
 
 		<div class="addr_form" v-show="adroot.page=='form'">
-            <div class="addr_input" @click="showpage('xiaoqu')">
-                <span class="form_title">小区或大厦</span>
-                <i class="arrow"></i>
-                <span class="formfr">{{adroot.checkedAddress.xiaoquName}}</span>
-            </div>
             <div class="addr_input">
-                <span class="form_title">所在地区</span>
-                <span class="formfr">{{adroot.checkedAddress.province}}{{adroot.checkedAddress.city}}{{adroot.checkedAddress.county}}</span>
-            </div>
-            <div class="addr_input">
-                <span class="form_title">小区地址</span>
-                <span class="formfr">{{adroot.checkedAddress.xiaoquAddr}}</span>
-            </div>
-			<div class="addr_input">
 				<span class="form_title">联系人</span>
-				<input placeholder="请输入联系人姓名" v-model="adroot.checkedAddress.receiveName"/>
+				<input placeholder="请输入联系人姓名" v-model="adroot.submitAddress.receiveName"/>
 			</div>
 			<div class="addr_input">
 				<span class="form_title">手机号</span>
-				<input type="tel" placeholder="请输入手机号码" v-model="adroot.checkedAddress.tel"/>
+				<input type="tel" placeholder="请输入手机号码" v-model="adroot.submitAddress.tel"/>
 			</div>
+            <div class="addr_input" >
+                <span class="fl fs15" style="color: black">所在地区</span>
+                <div class="reion-info">
+                    <span class="reionspan"  @click="toChoosePro">{{adroot.submitAddress.province}}</span>
+                    <span class="reionspan"  @click="toChooseCity(adroot.submitAddress.provinceId)">{{adroot.submitAddress.city}}</span>
+                    <span class="reionspan"  @click="toChooseCounty(adroot.submitAddress.cityId)">{{adroot.submitAddress.county}}</span>
+                </div>
+            </div>
+             <!---------------- -->
+                <div id="widget" v-show="widgets">
+                    <div class="w-modal-mask" @click="adcheck">
+                        <div class="w-modal">
+                            <div class="w-option w-lite-divider" :class="{WCheckedItem:region.value==checkeditem}" v-for="(region,index) in Addprovince" @click="Addcheck(index)">{{region.name}}</div>
+                        </div>
+                    </div>
+                </div>
+            <!---------------- -->
+            <div class="addr_input" @click="showpage('xiaoqu')">
+                <span class="form_title">小区或大厦</span>
+                <span class="fr fs14"  style="color: black" v-if="adroot.submitAddress.xiaoquName==''">请输入小区</span>
+                <span class="fr fs14" v-if="adroot.submitAddress.xiaoquName">{{adroot.submitAddress.xiaoquName}}</span>
+            </div>
+            <div class="addr_input">
+                <span class="form_title">小区地址</span>
+                <input placeholder="小区所在地址" class="fr fs14 hidden-input" v-model="adroot.submitAddress.amapDetailAddr"/>
+            </div>
+
 			<div class="addr_input">
 				<span class="form_title">楼栋门牌号</span>
-				<input placeholder="例如：1号楼402室" v-model="adroot.checkedAddress.detailAddress"/>
+				 <input placeholder="例如：1号楼402室" class="fr fs14 hidden-input" v-model="adroot.submitAddress.homeAddress"/>
 			</div>
             <div class="addr_btn" @click="addAddress">保存</div>
             <div class="addr_btn" @click="showpage('list')">返回列表</div>
 		</div>
-
-        <!-- 选择小区 -->
-        <div v-show="adroot.page=='xiaoqu'" class="xiaoqu_area">
-            <div class="xiaoqu_title">选择您所在的小区</div>
-		    <div class="xiaoqu_list">
-		        <div v-for="(xiaoqu,index) in adroot.xiaoqus" :key="xiaoqu.id"
-		            class="xiaoqu_item"
-		            :class="{'current':xiaoqu.id==adroot.checkedXiaoqu.id}"
-		            @click="choseXiaoqu(index)">{{xiaoqu.xiaoquName}}</div>
-		    </div>
-            <div class="xiaoqu_btn" @click="chosedXiaoqu()">下一步</div>
-        </div>
+       <!--	使用高德地图搜索-->
+           <div style="background-color: #fffff8" v-show="adroot.page=='xiaoqu'">
+                    <div class="location-wrap">
+                        <div class="location-input-wrap">
+                             <div class="location-i">
+                                     <input placeholder="请输入小区名称" class="location-input" v-model="suggestLocation" />    
+                                </div>
+                            <i class="location-btn-cancel" @click="cancelLocation" v-if="suggestion"></i>
+                        </div>
+                        <span class="location-btn-ensure" @click="submitLocation">确定</span>
+                    </div>
+                    <div class="location-empty-tip" v-if="!suggestions.length">
+                        准确的小区、街道或大厦名称能加快送货速度
+                    </div>
+                    <div class="location-location" @click="chooseLocation(suggestion)" v-for="suggestion in suggestions" v-if="suggestions.length">
+                        <span style="position:relative;font-color:#cccccc">{{suggestion._name}} - {{suggestion._address}}</span>
+                    </div>
+            </div>   
         </div>
 
         <!-- 优惠券 -->
@@ -177,33 +198,32 @@ export default {
            adroot:{
                 page:'list',
                 addresses:[],
-                checkedAddress:{xiaoquName:"请选择小区",province:"",
-                city:"",county:"",xiaoquAddr:"",receiveName:"",
-                tel:"",detailAddress:"",xiaoquEntId:0,id:0},  
-                xiaoqus:[
-            // {
-                //   city: "上海市",
-                //   cityId: 3,
-                //   county: "宝山区",
-                //   countyId: 4,
-                //   createDate: 1,
-                //   id: 1,
-                //   latitude: 31.364568,
-                //   longitude: 121.36249,
-                //   province: "上海",
-                //   provinceId: 2,
-                //   sort: 1,
-                //   xiaoquAddr: "韶山路419弄",
-                //   xiaoquId: 5,
-                //   xiaoquName: "馨佳园一街坊"
-                // },
-                // { xiaoquName: "递四方速递", id: "2" },
-                // { xiaoquName: "第三范德萨发生的方的", id: "3" },
-            // { xiaoquName: "第三范德萨范德萨方的", id: "4" }
-                ],
+                submitAddress:{
+                province:"选择省",
+                city:"选择市",county:"选择区县",
+                receiveName:"",
+                tel:"",
+                provinceId:0,
+                cityId:0,
+                countyId:0,
+                xiaoquName:"",
+                amapId:0,
+                amapDetailAddr:"",
+                homeAddress:""
+                },  
+                xiaoqus:[],
+                
             checkedXiaoqu:{id:0},    
            },
-        //新增地址   
+            Addprovince:[],
+            Addtype:'',
+            widgets:false,
+            checkeditem:'',
+        //新增地址  
+        //小区
+        suggestLocation:'',
+        suggestion:{},
+        suggestions:[], 
         // 优惠券
         coupons:[],
         allCoupons:[],
@@ -218,11 +238,17 @@ export default {
        };
    },
    created() {vm=this},
+    watch: {
+        suggestLocation:{
+                 handler(nv, ov){
+                        if(vm.suggestLocation.length>=2 && vm.suggestLocation!=vm.suggestion._name) {
+                            vm.getSuggestion();
+                        }
+                 },
+                    deep: true,
+            },
+   },
    mounted() {
-        vm.common.checkRegisterStatus();
-        // let url = location.href.split('#')[0];
-        // vm.receiveData.wxconfig(vm,wx,['chooseWXPay'],url);
-
         // vm.initSession4Test();
         vm.initOrder();
         vm.queryAddressesWithCache();
@@ -489,6 +515,50 @@ export default {
                 
             });
         },
+        Addcheck(index) {
+                vm.checkeditem=vm.Addprovince[index].value;
+                if(vm.Addtype== '1') {
+                     vm.adroot.submitAddress.province=vm.Addprovince[index].name;
+                     vm.adroot.submitAddress.provinceId=vm.Addprovince[index].value;
+                     vm.toChooseCity(vm.Addprovince[index].value);
+                     return;
+                }
+                if(vm.Addtype== '2') {
+                    vm.adroot.submitAddress.city=vm.Addprovince[index].name;
+                    vm.adroot.submitAddress.cityId=vm.Addprovince[index].value;
+                    vm.toChooseCounty(vm.Addprovince[index].value);
+                    return;
+                }      
+                if(vm.Addtype== '3') {
+                    vm.adroot.submitAddress.county=vm.Addprovince[index].name;
+                    vm.adroot.submitAddress.countyId=vm.Addprovince[index].value;
+                }
+                vm.widgets=false;
+         },
+        adcheck() {
+             vm.widgets=false;
+        },
+        toChoosePro() {
+            vm.queryRegion(1,0);
+        },
+        toChooseCity(value) {
+            vm.queryRegion(2,value)
+        },
+        toChooseCounty(value) {
+            vm.queryRegion(3,value)
+        },
+        queryRegion(type,pic) {
+            var url='regionsv2/'+type+'/'+pic;
+            vm.Addtype=type;
+            vm.receiveData.getData(vm, url,'data',function(){
+                    if(vm.data.success) {
+                        vm.Addprovince=vm.data.result;
+                        vm.widgets=true;
+                    }else {
+                        alert(vm.data.message== null ?'获取数据失败,请稍后再试':vm.data.message)
+                    }  
+            });
+        },
         check(address) {
             vm.address = address;
             vm.currentPage="main";
@@ -499,69 +569,87 @@ export default {
             vm.resetCheckedAddr();
         },
         resetCheckedAddr() {
-            vm.adroot.checkedAddress={xiaoquName:"请选择小区",province:"",
-            city:"",county:"",xiaoquAddr:"",receiveName:"",
+            vm.adroot.submitAddress={xiaoquName:"",province:"选择省",
+            city:"选择市",county:"选择区县",xiaoquAddr:"",receiveName:"",
             tel:"",detailAddress:"",xiaoquEntId:0,id:0};
+            vm.suggestLocation='';
         },
         //选择小区
         showpage(page) {
             vm.adroot.page = page;
             if(page=='xiaoqu'){
-                vm.queryXiaoquWithCache();
+               if(vm.adroot.submitAddress.city == "选择市"||vm.adroot.submitAddress.county=="选择区县"||vm.adroot.submitAddress.province=="选择省") {
+                 alert('请先选择你所在的区域！');
+                 vm.adroot.page='form';
+                 vm.suggestions=[];
+	    		return;
+                }
             }
         },
-        //获取小区
-        queryXiaoquWithCache() {
-             vm.receiveData.postData(vm,'/queryXiaoqus',null,'res',function() {
-                if(vm.res.success) {
-                     vm.adroot.xiaoqus = vm.res.result;
+           //点击叉叉
+        cancelLocation() {
+            vm.suggestLocation = '';
+            vm.adroot.page='form';
+        },
+         submitLocation(){
+            vm.adroot.submitAddress.xiaoquName = vm.suggestLocation;
+            if(vm.suggestion._id) {
+                vm.adroot.submitAddress.amapId=vm.suggestion._id;
+            }
+        
+            vm.adroot.submitAddress.amapDetailAddr=vm.suggestion.detailaddress;
+            vm.adroot.page='form';
+        },
+          //小区数据
+        getSuggestion() {
+            vm.receiveData.getData(vm, "amap/"+vm.adroot.submitAddress.city+"/"+vm.suggestLocation,'data',function(){
+                if(vm.data.success) {
+                    vm.suggestions=vm.data.result;
                 }else {
-                    alert("获取小区信息失败！");
-                    vm.adroot.xiaoqus = [];    
+                    vm.suggestions=[]
                 }
-            })
+            });
         },
-        //点击小区
-        choseXiaoqu(idx) {
-           vm.adroot.checkedXiaoqu=vm.adroot.xiaoqus[idx]; 
-        },
-        //选择小区下一步
-        chosedXiaoqu() {
-            vm.adroot.checkedAddress.xiaoquEntId=vm.adroot.checkedXiaoqu.id;
-            vm.adroot.checkedAddress.province=vm.adroot.checkedXiaoqu.province;
-            vm.adroot.checkedAddress.city=vm.adroot.checkedXiaoqu.city;
-            vm.adroot.checkedAddress.county=vm.adroot.checkedXiaoqu.county;
-            vm.adroot.checkedAddress.xiaoquAddr=vm.adroot.checkedXiaoqu.xiaoquAddr;
-            vm.adroot.checkedAddress.xiaoquName=vm.adroot.checkedXiaoqu.xiaoquName;
-            vm.showpage('form')
+        chooseLocation(suggestion) {
+            vm.suggestion = suggestion;
+            vm.suggestions=[];
+            vm.suggestLocation = suggestion._name;
         },
         //保存
         addAddress() {
-            if(!vm.adroot.checkedAddress.xiaoquEntId){
-                alert("请选择小区！");
-                return;
-            }
-            if(!vm.adroot.checkedAddress.detailAddress||!vm.adroot.checkedAddress.receiveName
-                ||!vm.adroot.checkedAddress.tel){
+           if(vm.adroot.submitAddress.province=="选择省"||vm.adroot.submitAddress.city=="选择市"||vm.adroot.submitAddress.county=="选择区县"){
+	    		alert("请选择地址！");
+	    		return;
+	    	}
+            if(vm.adroot.submitAddress.amapDetailAddr==""||vm.adroot.submitAddress.receiveName==""
+                ||vm.adroot.submitAddress.tel==""||vm.adroot.submitAddress.homeAddress==""){
                 alert("请填写完整相关信息！");
                 return;
-            }
-            if(!(/^1[3-9][0-9]\d{4,8}$/.test(vm.adroot.checkedAddress.tel))) {
-                alert("请填写正确的手机号！");
-                return;
-            }
+              }
+            if(!(/^1[3-9][0-9]\d{8}$/.test(vm.adroot.submitAddress.tel))) {
+             alert("请填写正确的手机号！");
+            return;
+           }
             vm.saveAddress();
         },
         saveAddress(){
             var addr = {};
-            addr.xiaoquId=vm.adroot.checkedAddress.xiaoquEntId;
-            addr.name=vm.adroot.checkedAddress.receiveName;
-            addr.tel=vm.adroot.checkedAddress.tel;
-            addr.detailAddr=vm.adroot.checkedAddress.detailAddress;
-            if(vm.adroot.checkedAddress.id){
-                addr.addrId=vm.adroot.checkedAddress.id;
-            }
-            vm.receiveData.postData(vm,'/saveAddressWithXiaoqu',addr,'res',function() {
+            addr.receiveName=vm.adroot.submitAddress.receiveName;
+            addr.tel=vm.adroot.submitAddress.tel;
+
+            addr.provinceId=vm.adroot.submitAddress.provinceId;
+            addr.province=vm.adroot.submitAddress.province;
+            addr.cityId=vm.adroot.submitAddress.cityId;
+            addr.city=vm.adroot.submitAddress.city;
+            addr.county=vm.adroot.submitAddress.county;
+            addr.countyId=vm.adroot.submitAddress.countyId;
+            addr.xiaoquName=vm.adroot.submitAddress.xiaoquName;
+            // vm.submitAddress.amapDetailAddr+
+            addr.detailAddress=vm.adroot.submitAddress.homeAddress;
+            addr.amapDetailAddr=vm.adroot.submitAddress.amapDetailAddr;
+            addr.amapId=vm.adroot.submitAddress.amapId;
+           
+            vm.receiveData.postData(vm,'/addAddress',addr,'res',function() {
             if(vm.res.success) {
                 vm.adroot.addresses.push(vm.res.result);
                 vm.address=vm.res.result;
@@ -664,6 +752,12 @@ export default {
 .fs16 {
     font-size: 16px;
 }
+.fs15 {
+font-size: 15px;
+}
+.fs14 {
+font-size: 14px;
+}
 .addr_location {
     color: #666666;
     line-height: 20px;
@@ -717,6 +811,7 @@ export default {
     padding:5px;
 }
 .addr_input{
+    overflow: hidden;
     line-height: 42px;
     border-bottom: 1px solid #777777;
 }
@@ -736,18 +831,8 @@ export default {
     font-size:16px;
     color:black;
 }
-.arrow{
-    float:right;
-    width:9px;
-    height:40px;
-    background: url("../assets/images/index/icon_arrow1.png") no-repeat;
-    background-size: 9px 17px;
-    background-position: right center;
-    margin-left: 4px;
-}
-.formfr{
-    float:right;
-}
+
+
 .xiaoqu_btn,.addr_btn{
     position: fixed;
     color:white;
@@ -764,33 +849,7 @@ export default {
     position: relative;
     margin-top:30px;
 }
-.xiaoqu_area{
-    width: 100%;
-    height:100%;
-    position:fixed;
-}
-.xiaoqu_title{
-    font-size:18px;
-    padding: 6px;
-}
-.xiaoqu_list{
-    width: 100%;
-    overflow: scroll;
-    position: fixed;
-    top:50px;
-    bottom: 80px;
-}
-.xiaoqu_item{
-    width: 80%;
-    margin-left: 10%;
-    border:1px #777777 solid;
-    text-align: center;
-    padding: 4px 0;
-    margin-top: 10px;
-}
-.xiaoqu_item.current{
-    border:1px #FF3E00 solid;
-}
+
 /* -------------- */
 .bg_ffffff{
     background: #ffffff;
@@ -838,6 +897,7 @@ export default {
 .coupon {
     margin: 15px 0px;
 }
+
 .divpad {
     padding: 15px 40px 15px 15px;
     position: relative;
@@ -992,6 +1052,119 @@ export default {
     color:#fff;
     line-height: 50px;
     text-align: center;
+}
+.reionspan {
+    width: 31%;
+    display: inline-block;
+    text-align: right;
+}
+.reion-info {
+    width: 70%;
+    float: right;
+    overflow: hidden;
+    font-size: 15px;
+}
+.w-modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 10;
+}
+.w-modal {
+    position: relative;
+    background: #fff;
+    border-radius: 5px;
+    margin: 20% auto;
+    padding: 10px 15px;
+    overflow: scroll;
+    width: 60%;
+    max-height: 80%;
+}
+.w-lite-divider {
+    border-bottom: 1px solid #d4cfc8;
+}
+.w-option {
+    background: url('../assets/images/index/icon_select.png') no-repeat;
+    background-position: left center;
+    background-size: 16px;
+    padding: 15px 0 15px 25px;
+}
+.WCheckedItem {
+    background: url('../assets/images/index/icon_selected.png') no-repeat;
+}
+.location-wrap {
+    position: relative;
+    padding: 0 10px;
+    height: 49px;
+    line-height: 49px;
+    border-bottom: 1px solid #d4cfc8;
+}
+
+.location-input-wrap {
+    position: relative;
+    padding: 5px 10px;
+    margin-right: 80px;
+    left: 0px;
+}
+
+.location-input {
+    display: block;
+    height: 36px;
+    width: 100%;
+    outline: none;
+    border:none;
+    vertical-align: middle;
+    font-size: 15px;
+}
+.location-i {
+    padding-right: 30px;
+    border-radius: 4px;
+    border: 1px solid #d4cfc8;
+}
+.location-btn-cancel {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    display: inline-block;
+    height: 36px;
+    width: 30px;
+    background: url('../assets/images/index/icon_cancel.png') no-repeat;
+    background-size: 15px;
+    background-position: center;
+}
+.location-btn-ensure {
+    position: absolute;
+    display: block;
+    top: 0;
+    height: 36px;
+    line-height: 36px;
+    margin-top: 5px;
+    right: 15px;
+    color: #3b3937;
+    border-radius: 4px;
+    font-size: 15px;
+    width: 65px;
+    text-align: center;
+    border: 1px solid #d4cfc8;
+}
+.location-empty-tip {
+    margin: 0 auto;
+    margin-top: 105px;
+    font-size: 12px;
+    color: #888;
+    width: 165px;
+    text-align: center;
+    line-height: 18px;
+}
+
+.location-location {
+    margin: 0 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #d4cfc8;
+    
 }
 /* ---------- */
 </style>

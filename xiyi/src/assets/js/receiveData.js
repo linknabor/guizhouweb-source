@@ -1,11 +1,6 @@
-import xml2js from'xml2js' 
-var xmlParser = new xml2js.Parser({explicitArray : false, ignoreAttrs : true})
-    //xml转json
-import wx from 'weixin-js-sdk';
 
 
 let receiveData = {
-    
     /*
      * 微信配置提取的公共方法
      * @param  {objec} vm     [Vue实例]
@@ -32,7 +27,62 @@ let receiveData = {
                 console.log('fail', err);
         });
     },
-    
+
+    // chooseWXPay:function(vm,wx,backdataname){
+    //     wx.chooseWXPay({
+    //         timestamp: 0, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+    //         nonceStr: '', // 支付签名随机串，不长于 32 位
+    //         package: '', // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+    //         signType: '', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+    //         paySign: '', // 支付签名
+    //         success: function (res) {
+    //          alert
+    //         }
+    //     })
+    // },
+
+    /*微信拍照或从手机相册中选图接口*/
+    chooseImage:function(vm,wx,backdataname){
+        wx.chooseImage({
+            count: 1, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+            success: function (res) {
+                    var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            },
+            fail: function (res){
+                console.log("网络不稳定 ，请刷新重试！")
+            }
+        });
+    },
+
+
+    /*
+      * 微信扫一扫提取的公共方法
+     * @param  {objec} vm     [Vue实例]
+     * @param  {objec} wx     [微信实例]
+     * @param  {string} backdataname    [接收微信返回的结果]
+    */
+    scan:function(vm,wx,backdataname){
+        wx.scanQRCode({
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                    //console.log(res.resultStr)
+                     var rs = res.resultStr;
+                     if(rs.indexOf('CODE')>=0) {
+                        rs = rs.split(',')[1];
+                     }
+                        vm[backdataname] = rs; // 当needResult 为 1 时，扫码返回的结果
+                },
+            fail: function (res) {
+                    //alert('暂放-配置微信扫一扫失败')
+                    console.log("网络不稳定 ，请刷新重试！")
+                    //alert("网络不稳定 ，请刷新重试！");
+                }
+        });
+    },
+
     /*
      * 通过axios获取API数据,并将请求回来列表数据，自动装载到Vue实例模板中
      * @param  {objec} vm     [Vue实例]
@@ -54,6 +104,7 @@ let receiveData = {
             })
             .then(function (res){
                 let a = JSON.parse(res.data)
+                // dealWithAjaxData(null,a,function(e){},function(){})
                 vm[backdataname] = a
                 if (typeof (callback) == 'function') {//回调
                     callback()
@@ -62,8 +113,7 @@ let receiveData = {
             })
             .catch(function (err) {
                 //alert('暂放-接口调用失败')
-                // console.log(err);
-                // callbackss(err)
+                console.log(err);
             })
     },
    /**
@@ -79,16 +129,13 @@ let receiveData = {
         };
         vm.axios.post(url, params)
             .then(function (res) {
-
                 let a = res.data;
+                // dealWithAjaxData(null,a,function(e){},function(){})
                  vm[backdataname] = JSON.parse(a)
-                // xmlParser.parseString(a, function (err, result) {
-                // //将返回的结果赋值
-                //  vm[backdataname] = result.BaseResult
-                // });
                 if (typeof (callback) == 'function') {//回调
                         callback()
                 }
+
             })
             .catch(function (err) {
                 if(vm.loadingShow){
@@ -100,6 +147,7 @@ let receiveData = {
                 console.log('fail', err);
             });
     },
+
 
 };
 

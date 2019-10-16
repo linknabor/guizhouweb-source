@@ -48,6 +48,7 @@ var axiosInstance = axios.create({
   },
   // baseURL: "https://test.e-shequ.com/dhzj3/wechat/hexie/wechat/",
   baseURL: Vue.prototype.config.URL,
+
   withCredentials:true,
   transformResponse: [function (data) {//数据转换
     return data;

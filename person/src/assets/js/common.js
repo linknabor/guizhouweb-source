@@ -1,7 +1,7 @@
 //开发环境
 var MasterConfig = function() {
     var t = {
-        baseUrl: "https://www.e-shequ.com/dhzj3/wechat/hexie/wechat/",
+        baseUrl: "https://test.e-shequ.com/wechat/hexie/wechat/",
         basePageUrl:"https://www.e-shequ.com/dhzj3/weixin/",
         payPageFolder:"https://www.e-shequ.com/pay/",
         payPageSuffix:"zj3",
@@ -316,4 +316,4 @@ updateUserStatus(user) {
 checkBindAndBind();
 checkCodeAndLogin();
 common.setTitle(MasterConfig.C("shop_name") );
-export default common
+export default common;

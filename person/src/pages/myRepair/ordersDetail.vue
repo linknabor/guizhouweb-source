@@ -1,14 +1,10 @@
 <template>
-<!-- <div class="whd"> -->
+<div class="whd">
    <div class="myrepair" >
-            <div class="ov top-title pr15">
-                <img class="icon-repair fl" :src="typeImg"/>
+            <div class="ov top-title pr15" style=" padding-left:15px;">
+                <!-- <img class="icon-repair fl" :src="typeImg"/> -->
                 <div class="ov ptb15">
-                    <span class="fl fs15" style="color: #000">{{typeName}}</span>
-                    <span class="fr fs12" style="color: #999;"><i class="icon time-icon"></i>{{item.time}}</span>
-                </div>
-                <div class="comment ov pb15">
-                    <span class="fl fs15" style="font-size: 16px;color: #666">{{item.projectName}}</span>
+                    <span class="fl fs15" style="color: #FF8A00;">便民维修</span>
                     <span class="fr fs12 status-font">{{item.statusStr}}</span>
                 </div>
             </div>
@@ -37,13 +33,13 @@
             </div>
           
             <div style="background: white;">
-                  <!-- 如果用户上传了维修图片 -->
-                <div class="photo_area" v-show="imgUrlList.length>0">
+                  <!-- 如果用户上传了维修图片  -->
+                <div class="photo_area"  v-show="imgUrlList.length>0">
                     <div v-for="(photo,i) in imgUrlList" class="photo_wrap a_third_m20_height" @click="showPhoto(i)">
                         <img :src="photo" class="photo a_third_m22_height"/>
+                        <!-- <img class="photo a_third_m22_height" src="../../assets/images/community/img_beautifulgirl_60x60_selected.png" alt=""> -->
                     </div>
                 </div>
-                
                 <div class="top-info" v-show="item.memo!=''">
                     <div class="item" style="padding-left: 15px;">
                         <span class="value" v-html="item.memo"></span>
@@ -64,9 +60,9 @@
                         <a href="#" class="menu-link lite-divider">
                             <p class="value2">所在小区<span style="float: right;padding-right: 10px;">{{item.xiaoquName}}</span></p>
                         </a>
-                        <a href="#" class="menu-link">
+                        <!-- <a href="#" class="menu-link">
                             <p class="value2">预约上门时间<span style="float: right;padding-right: 10px;color: #ff8a00;">{{item.requireDateStr}}</span></p>
-                        </a>
+                        </a> -->
                     </div>
                 </div>
             </div>
@@ -81,8 +77,7 @@
                     </div>
                 </div>
             </div>
-
-            <div style="background: white;padding: 0 15px ;margin:15px 0 " v-show="1==item.commentStatus">
+            <div style="background: white;padding: 0 15px ;margin-top:15px" v-show="1==item.commentStatus">
                     <div class="lite-divider detail-title fs14">
                         我的评价
                     </div>
@@ -124,11 +119,11 @@
                     <div class="photo_area" v-show="commentImgUrlList.length>0">
                         <div v-for="(photo,i) in commentImgUrlList" class="photo_wrap a_third_m20_height" @click="showCommentPhoto(i)">
                             <img :src="photo" class="photo a_third_m22_height"/>
+                            <!-- <img src="../../assets/images/common/icon_property_selected.png" alt=""> -->
                         </div>
                     </div>
             </div>
             <div style="width: 100%;height: 15px;"></div>
-
             <div class="cbtn-fixed">
                 <div class="cbtn" @click="cancel" v-show="item.showStatus==1">取消维修</div>
                 <div class="tow_btn"  v-show="item.showStatus==2">
@@ -146,19 +141,19 @@
             </div>
 
    </div>
-<!-- </div> -->
+</div>
 
 </template>
 
 <script>
 let vm;
-import btn1 from '../../assets/images/img/btn1.png';
-import btn2 from '../../assets/images/img/btn2.png';
-import btn3 from '../../assets/images/img/btn3.png';
-import btn4 from '../../assets/images/img/btn4.png';
-import btn5 from '../../assets/images/img/btn5.png';
-import btn6 from '../../assets/images/img/btn6.png';
-import btn7 from '../../assets/images/img/icon_btn_jiadian.png';
+// import btn1 from '../../assets/images/img/btn1.png';
+// import btn2 from '../../assets/images/img/btn2.png';
+// import btn3 from '../../assets/images/img/btn3.png';
+// import btn4 from '../../assets/images/img/btn4.png';
+// import btn5 from '../../assets/images/img/btn5.png';
+// import btn6 from '../../assets/images/img/btn6.png';
+// import btn7 from '../../assets/images/img/icon_btn_jiadian.png';
 import wx from 'weixin-js-sdk';
 import { MessageBox } from 'mint-ui';
 export default {
@@ -171,24 +166,24 @@ export default {
            commentImgUrlList:[],
            payTypeName:"现金支付",
            oTel:'#',
-           typeConfig:{
-                1:["浴室维修",btn1],
-                2:["厨房维修",btn2],
-                3:["客厅卧室维修",btn3],
-                4:["强弱电维修",btn4],
-                5:["门窗维修",btn5],
-                6:["其它维修",btn6],
-                7:["家电",btn7]
-                    },
+        //    typeConfig:{
+        //         1:["浴室维修",btn1],
+        //         2:["厨房维修",btn2],
+        //         3:["客厅卧室维修",btn3],
+        //         4:["强弱电维修",btn4],
+        //         5:["门窗维修",btn5],
+        //         6:["其它维修",btn6],
+        //         7:["家电",btn7]
+        //             },
        };
    },
    created() {
        vm=this;
    },
    mounted() {
+       let url = location.href.split('#')[0];
+        vm.receiveData.wxconfig(vm,wx,['previewImage'],url);
 
-    let url = location.href.split('#')[0];
-    vm.receiveData.wxconfig(vm,wx,['previewImage'],url);
        vm.querys();
    },
    methods: {
@@ -196,8 +191,8 @@ export default {
             vm.receiveData.getData(vm,'repair/query/'+vm.$route.query.orderId,'res',function(){
             if(vm.res.success) {
                 var order=vm.res.result
-                vm.typeName=vm.typeConfig[order.repairType][0]
-                vm.typeImg=vm.typeConfig[order.repairType][1]
+                // vm.typeName=vm.typeConfig[order.repairType][0]
+                // vm.typeImg=vm.typeConfig[order.repairType][1]
                 vm.imgUrlList = order.imgUrlList;
                 vm.commentImgUrlList = order.commentImgUrlList;
                 if(order.payType==1){
@@ -207,8 +202,10 @@ export default {
 	    		vm.oTel="tel:"+order.operatorTel;
 	        	}
                 vm.item=order;
+            }else {
+                alert("获取维修信息失败，请去维修记录中查看！");
             }
-            },function() {})
+            })
        },
        //预览图片
        showPhoto(i){
@@ -234,9 +231,7 @@ export default {
                    if(action== 'confirm') {
                         vm.receiveData.getData(vm,"repair/finish/"+vm.item.id,'res',function(){
                            if(vm.res.success) { 
-                            //确定跳转repairPay.html?oId="+o.item.id
-                            //  vm.$router.push({path:'/repairPay',query:{ordersID:vm.item.id}})
-                              location.href= vm.config.person_zhifu.orderpays+"orderId="+vm.item.id+'&status=123';
+                           location.href= vm.config.person_zhifu.orderpays+"orderId="+vm.item.id+'&status=123';
                            }else {
                              alert("系统异常，请稍后重试！");
                            }  
@@ -271,7 +266,8 @@ export default {
         comment() {
             //跳转 comment.html?oId="+o.item.id
             // vm.$router.push({path:'/commentxiu',query:{orderId:vm.item.id}})
-             location.href=vm.config.person_zhifu.comment+"?ordersID="+vm.item.id
+            //  location.href="https://www.e-shequ.com/shijiazhuang/weixin/orderpays.html?state=123#/commentxiu?ordersID="+vm.item.id
+            window.location.href=vm.basePageUrlpay+"orderpay.html?state=123#/commentxiu?ordersID="+vm.item.id
         },
         //返回
         back() {
@@ -285,15 +281,15 @@ export default {
 
 <style  scoped>
 .whd {
-    width:100%;
-    height:100%;
-}
-.myrepair {
     background: #F9F9E9;
     margin: 0;
-    height: auto;
+    position:absolute;
+    width:100%;
+    height: 100%;
+}
+.myrepair {
     padding-bottom: 50px;
-    overflow: hidden;
+  
 }
 .weia {
     display:inline-block;
@@ -398,18 +394,20 @@ export default {
     font-size: 15px;
     color: #7e6b5a;
     padding: 10px;
+    overflow: hidden;
 }
 .photo_wrap {
-		    width: 33%;
-		    text-align: center;
-    		display: inline-block;
-             height: 100px;
+    width: 33%;
+    text-align: center;
+    display: inline-block;
+    height: 100px;
+    float: left;
         }
 .photo{
-		    margin: 3px;
-		    width: 90%;
-		    outline: #e5e2dd solid 1px;
-             height: 96px;
+        margin: 3px;
+        width: 90%;
+        /* outline: #e5e2dd solid 1px; */
+        height: 96px;
 		}        
 .value {
     display: block;
@@ -417,6 +415,7 @@ export default {
     width: 100%;
     line-height: 25px;
     font-size: 15px;
+    word-wrap: break-word;word-wrap: break-word;
 }
 /* 报修人 */
 .menu-link {

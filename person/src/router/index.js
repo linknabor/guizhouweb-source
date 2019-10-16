@@ -101,6 +101,14 @@ let router= new Router({
         title:'取消维修'
       }
     },
+    {
+      path:'/addresses',
+      name:'addresses',
+      component:resolve => require(['@/pages/addresses'],resolve),
+      meta: {
+        title:'常用地址'
+      }
+    }
 
   ]
 })

@@ -1,5 +1,5 @@
 <template>
-   <div class="home" :class="{homec:groupsNum==0}">
+   <div class="home" >
                 <!--没有订单式时显示背景图 -->
         <div class="avatar-wrap rel ov" v-if="groupsNum == 0">
             <div class="filter-img avatar-wrap center-bg"></div>
@@ -167,9 +167,9 @@ export default {
        vm=this;
    },
    mounted() {
-        vm.common.checkRegisterStatus()
-    let url = location.href.split('#')[0];
-    vm.receiveData.wxconfig(vm,wx,['chooseWXPay'],url);
+       
+    // let url = location.href.split('#')[0];
+    // vm.receiveData.wxconfig(vm,wx,['chooseWXPay'],url);
     vm.home();
 
    },
@@ -209,6 +209,14 @@ export default {
            
            vm.receiveData.getData(vm,'requestPay/'+order.serviceOrderId,'n',function() {
                   if(vm.n.success) {
+                      wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: vm.res.result.appId, // 必填，公众号的唯一标识
+                    timestamp: vm.res.result.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: vm.res.result.nonceStr, // 必填，生成签名的随机串
+                    signature: vm.res.result.signature,// 必填，签名，见附录1
+                    jsApiList: ['chooseWXPay'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
                       wx.chooseWXPay({
                         "timestamp":vm.n.result.timestamp,
                         "nonceStr":vm.n.result.nonceStr,
@@ -274,7 +282,7 @@ export default {
 }
 /* 没有数据 */
 .avatar-wrap {
-    height: 10rem;
+    height: 100%;
     text-align: center;
 }
 .rel {
@@ -285,7 +293,7 @@ export default {
     padding: 1px;
 }
 .center-bg {
-    background-image: url(../assets/images/bg_orders.jpg) ;
+    background-image: url(../assets/images/bg_orders1.jpg);
     background-size: cover;
     background-position: center;
 }

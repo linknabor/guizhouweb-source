@@ -4,7 +4,7 @@
                 <img class="icon-repair fl" :src="item.typeImg"/>
                 <!-- <img class="icon-repair fl" src="../../assets/images/img/btn2.png"/> -->
                 <div class="ov ptb15">
-                    <span class="fl fs15" style="color: #000">{{item.typeName}}</span>
+                    <!-- <span class="fl fs15" style="color: #000">{{item.typeName}}</span> -->
                     <span class="fr fs12" style="color: #999;">
                         <i class="icon time-icon"></i>{{item.time}}</span>
                 </div>
@@ -56,7 +56,7 @@ export default {
                 if(vm.res.success) {
                         vm.orders=vm.res.result;
                         for(var i in vm.orders)  {
-                            vm.orders[i].typeName = vm.typeConfig[vm.orders[i].repairType][0];
+                            // vm.orders[i].typeName = vm.typeConfig[vm.orders[i].repairType][0];
                             vm.orders[i].typeImg = vm.typeConfig[vm.orders[i].repairType][1];
                         }
                 }
@@ -138,8 +138,12 @@ export default {
     border-radius: 3px;
 }
 .emptybg{
-            height: 10rem;
-        	/* background: url(../../assets/images/img/bg_repair.jpg) no-repeat; */
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        	background: url(../../assets/images/img/bg_weixiudan.jpg) no-repeat;
         	background-size: 100%;
         }
 </style>

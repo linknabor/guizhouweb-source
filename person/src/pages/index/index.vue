@@ -61,10 +61,10 @@
 	    </div>
 
          <div class="info-wrap" style="overflow:hidden; clear: both;">
-                <a :href="this.config.person_repair.url" class="input-wrap menu-person-link lite-divider">
+                <router-link :to="{path:'/myrepair'}" class="input-wrap menu-person-link lite-divider">
                     <span class="input-info lf30 fs16">报修</span>
                     <span class="fr fs14 left_color">查看消息&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                </a>
+                </router-link>
                 <!-- v-if="user.repairOperator -->
               <router-link :to="{path:'/operatorOrders'}" class="input-wrap menu-person-link lite-divider"  v-if="user.repairOperator">
                     <span class="input-info lf30 fs16">我是维修工</span>
@@ -81,6 +81,10 @@
                     <span class="input-info lf30 fs16">意见建议</span>
                     <span class="fr fs14 left_color">查看消息&nbsp;&nbsp;&nbsp;&nbsp;</span>
                 </a>
+                <div @click="gotoAddress" class="input-wrap menu-person-link lite-divider">
+                    <span class="input-info lf30 fs16">常用地址</span>
+                    <span class="fr fs14 left_color">收货地址&nbsp;&nbsp;&nbsp;&nbsp;</span>
+               </div>
 
          </div>
 
@@ -96,6 +100,13 @@
                         <span class="fr fs14 left_color">021-50876295</span>
                     </a>
         </div>
+        <div class="bottom-info divider" style="text-align: center; display: block;">
+      <div
+        class="divider highlight"
+        style="text-align: center;width:100%;font-size:14px"
+      >长按关注贵州幸福家园，尊享更多服务和商品</div>
+      <img style="width: 200px;" src="../../assets/images/person/qrcode_for_gh_e112bd0e043f_258.jpg" />
+    </div>
    </div>
 </template>
 
@@ -112,7 +123,7 @@ export default {
         	zhima:"0",
         	lvdou:"0",
             couponCount:0,
-            officeTel:0,
+            officeTel:'',
         },
        };
    },
@@ -122,7 +133,6 @@ export default {
    },
    mounted() {
     //    this.initSession4Test();
-    //    console.log(Config1("user_info"))
        this.User();
        this.updateCouponStatus();
    },
@@ -383,5 +393,15 @@ background-image: url("../../assets/images/person/icon_person_tuangou.png");
 .special-link {
     padding-right: 0;
     background: none;
+}
+.bottom-info {
+  padding: 20px 15px 5px 15px;
+}
+
+.highlight {
+  color: #ff8a00;
+}
+.divider {
+  border-bottom: 10px solid #f7f7f2;
 }
 </style>

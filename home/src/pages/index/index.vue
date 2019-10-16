@@ -35,7 +35,6 @@ export default {
        return {
              swiperOption:{
                 notNextTick:true,
-                // autoplay:false,
                 autoplay: {
                     disableOnInteraction:true,
                     delay:3000
@@ -70,6 +69,9 @@ export default {
             i = null,
             e = function(n) {
             console.log(JSON.stringify(n));
+            if(n.success&&n.result==null) {
+					reLogin();
+				}
             ;
 
             },

@@ -1,22 +1,27 @@
 <template>
    <div class="operorder">
-            <div class="ov top-title pr15">
-                <img class="icon-repair fl" :src="typeImg"/>
-                <div class="ov ptb15">
-                    <span class="fl fs15" style="color: #000">{{typeName}}</span>
-                    <span class="fr fs12" style="color: #999;"><i class="icon time-icon"></i>{{item.time}}</span>
+    <div class="opers">
+            <div class="ov top-title pr15" style=" padding-left:15px;">
+                <!-- <img class="icon-repair fl" :src="typeImg"/> -->
+                <div class="ov ptb15" >
+                    <span class="fl fs15" style="color:  #FF8A00;">便民维修</span>
+                    <span class="fr fs12 status-font">{{item.statusStr}}</span>   
+
+                    <!-- <span class="fl fs15" style="color: #000">{{typeName}}</span>
+                    <span class="fr fs12" style="color: #999;"><i class="icon time-icon"></i>{{item.time}}</span> -->
                 </div>
-                <div class="comment ov pb15">
+                <!-- <div class="comment ov pb15">
                     <span class="fl fs15" style="font-size: 16px;color: #666">{{item.projectName}}</span>
                     <span class="fr fs12 status-font">{{item.statusStr}}</span>
-                </div>
+                </div> -->
             </div>
 
              <div style="background: white;">
-                  <!-- 如果用户上传了维修图片 -->
+                  <!-- 如果用户上传了维修图片   -->
                 <div class="photo_area" v-show="imgUrlList.length>0">
                     <div v-for="(photo,i) in imgUrlList" class="photo_wrap a_third_m20_height" @click="showPhoto(i)">
                         <img :src="photo" class="photo a_third_m22_height"/>
+                        <!-- <img class="photo a_third_m22_height" src="../../assets/images/community/img_education_60x60_selected.png" alt=""> -->
                     </div>
                 </div>
                 
@@ -31,18 +36,24 @@
                     <div class="lite-divider detail-title fs14">
                         报修人信息
                     </div>
-                    <div class="top-info">
-                        <div class="item lite-divider pl0" style="padding-bottom: 15px;">
-                            <p class="value2" style="font-size: 16px;">{{item.receiverName}}<span style="padding-left: 20px;">{{item.tel}}</span></p>
-                            <p class="value" style="padding-top: 5px;">{{item.address}}</p>
-                    </div>
+                     <div class="bottomLine" style="color:#3b3937">
+                            <span class="custom-menu-link lite-dividers">
+                                <p class="value2">{{item.receiverName}}
+                                    <a style="float: right;padding-right: 10px;color:#3b3937;" :href="'tel:'+item.tel">{{item.tel}}</a>
+                                </p>
+                            </span>
+                     </div>
                     <div class="bottomLine" style="color:#3b3937">
                             <span class="custom-menu-link lite-dividers">
                                 <p class="value2">所在小区<span style="float: right;padding-right: 10px;">{{item.xiaoquName}}</span></p>
                             </span>
-                            <span class="custom-menu-link">
-                                <p class="value2">预约上门时间<span style="float: right;padding-right: 10px;color: #ff8a00;">{{item.requireDateStr}}</span></p>
-                            </span>
+                            
+                     </div>
+
+                    <div class="top-info">
+                        <div class="item lite-divider pl0" style="padding-bottom: 15px;">
+                            <!-- <p class="value2" style="font-size: 16px;">{{item.receiverName}}<span style="padding-left: 20px;">{{item.tel}}</span></p> -->
+                            <p class="value" style="padding-top: 5px;">{{item.address}}</p>
                         </div>
                     </div>
             </div>
@@ -53,18 +64,19 @@
                 <a href="#" class="btn" @click="finish" v-show="item.opStatus==2">我已完工</a>
                 <a href="#" class="btn" @click="deleteOrder" v-show="item.opStatus==3">删除</a>
             </div>
+        </div>    
    </div>
 </template>
 
 <script>
 let vm;
-import btn1 from '../../assets/images/img/btn1.png';
-import btn2 from '../../assets/images/img/btn2.png';
-import btn3 from '../../assets/images/img/btn3.png';
-import btn4 from '../../assets/images/img/btn4.png';
-import btn5 from '../../assets/images/img/btn5.png';
-import btn6 from '../../assets/images/img/btn6.png';
-import btn7 from '../../assets/images/img/icon_btn_jiadian.png';
+// import btn1 from '../../assets/images/img/btn1.png';
+// import btn2 from '../../assets/images/img/btn2.png';
+// import btn3 from '../../assets/images/img/btn3.png';
+// import btn4 from '../../assets/images/img/btn4.png';
+// import btn5 from '../../assets/images/img/btn5.png';
+// import btn6 from '../../assets/images/img/btn6.png';
+// import btn7 from '../../assets/images/img/icon_btn_jiadian.png';
 import wx from 'weixin-js-sdk';
 import { MessageBox } from 'mint-ui';
 export default {
@@ -77,23 +89,23 @@ export default {
            commentImgUrlList:[],
            payTypeName:"现金支付",
            oTel:'#',
-           typeConfig:{
-                1:["浴室维修",btn1],
-                2:["厨房维修",btn2],
-                3:["客厅卧室维修",btn3],
-                4:["强弱电维修",btn4],
-                5:["门窗维修",btn5],
-                6:["其它维修",btn6],
-                7:["家电",btn7]
-                    },
+        //    typeConfig:{
+        //         1:["浴室维修",btn1],
+        //         2:["厨房维修",btn2],
+        //         3:["客厅卧室维修",btn3],
+        //         4:["强弱电维修",btn4],
+        //         5:["门窗维修",btn5],
+        //         6:["其它维修",btn6],
+        //         7:["家电",btn7]
+        //             },
        };
    },
    created() {
        vm=this;
    },
    mounted() {
-    let url = location.href.split('#')[0];
-    vm.receiveData.wxconfig(vm,wx,['previewImage'],url);
+        let url = location.href.split('#')[0];
+        vm.receiveData.wxconfig(vm,wx,['previewImage'],url);
        vm.queryOrder(); 
    },
 
@@ -102,19 +114,20 @@ export default {
            vm.receiveData.getData(vm,'operator/repair/query/repairId/'+vm.$route.query.ordersID,'res',function(){
              if(vm.res.success) {  
                 var order=vm.res.result
-                vm.typeName=vm.typeConfig[order.repairType][0]
-                vm.typeImg=vm.typeConfig[order.repairType][1]
+                // vm.typeName=vm.typeConfig[order.repairType][0]
+                // vm.typeImg=vm.typeConfig[order.repairType][1]
+                
                 vm.imgUrlList = order.imgUrlList;
                 vm.commentImgUrlList = order.commentImgUrlList;
                 vm.item=order;
              }else {
                  if(vm.res.errorCode==9999){
-	    		    alert(vm.res.message);
-	    		    vm.$router.push({path:'/operatorOrders'})
-                    } else {
-                        alert("获取维修信息失败，请去维修记录中查看！");
-                    }
-             }
+                    alert(vm.res.message);
+                    vm.$router.push({path:'/operatorOrders'})
+                } else {
+                    alert("获取维修信息失败，请去维修记录中查看！");
+                }
+             }   
             })
        },
        //预览图片
@@ -179,11 +192,14 @@ export default {
 
 <style  scoped>
 .operorder {
-    background: #F9F9E9;
     margin: 0;
-    height: auto;
-        padding-bottom: 50px;
+    height: 100%;
+    width:100%;
+    position:absolute;
+    background: #F9F9E9;
+    padding-bottom: 50px;
 }
+
 .ov {
     overflow: hidden;
     padding: 1px;
@@ -250,16 +266,20 @@ export default {
     font-size: 15px;
     color: #7e6b5a;
     padding-left: 10px;
+    overflow: hidden;
 }
 .photo_wrap{
 		    width: 33%;
 		    text-align: center;
     		display: inline-block;
+             height: 100px;
+            float: left;
  }
 .photo{
         margin: 3px;
         width: 90%;
         outline: #F7F7F1 solid 1px;
+        height: 96px;
 }
 .top-info {
     padding: 10px 0px;
@@ -275,6 +295,7 @@ export default {
     width: 100%;
     line-height: 25px;
     font-size: 15px;
+    word-wrap: break-word;
 }
 /* 报修人信息 */
 .detail-title {

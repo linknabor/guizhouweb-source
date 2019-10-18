@@ -3,7 +3,7 @@ var MasterConfig = function() {
     var t = {
         baseUrl: "https://test.e-shequ.com/guizhou/wechat/hexie/wechat/",
         basePageUrl:"https://test.e-shequ.com/guizhou/weixin/",
-        payPageFolder:"https://test.e-shequ.com/pay/",
+        payPageFolder:"https://test.e-shequ.com/weixin/pay/",
         payPageSuffix:"zj3",
         appId: "wx753f3c2293294605",
         oauthUrl: "https://open.weixin.qq.com/connect/oauth2/authorize?",

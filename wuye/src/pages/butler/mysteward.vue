@@ -15,7 +15,7 @@
         <div id="divconf" class="divconf" style="display:block; position:fixed; z-index: 2147483647;" @click="hideImg"></div>
 
         <div v-show="threads_count==0">
-		    <img class="adimg" src="../../assets/images/pay/bg_publish.jpg"/>
+		    <img class="adimg" src="http://img.e-shequ.cn/Fk-7DmXbB2F4s3bLwsU-YUaFx8Dc"/>
 	    </div>
 
         <!-- 评论  -->

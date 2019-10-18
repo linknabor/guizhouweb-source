@@ -60,7 +60,7 @@
 <template>
 	<div class="myhouse">
 		<div class="nohouse" v-if="dataArr.length == 0">
-			<img src="../../assets/images/house/bg_nohouse.png" alt="">
+			<img src="http://img.e-shequ.cn/FocY5yjN1xKzMAjTrr-2q8qUFDp2" alt="">
 		</div>
 		<ul class="house-list" v-else>
 			<li v-for="(i,index) in dataArr" :key="index">

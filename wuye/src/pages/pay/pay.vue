@@ -8,15 +8,17 @@
 		</div>
 
 		<mt-navbar id="navBar"  v-model="selected">
-	    	<mt-tab-item id="a">账单缴费</mt-tab-item>
+	    	
 	    	<!--  -->
+			<mt-tab-item id="a">查询缴费</mt-tab-item>
 	    	<mt-tab-item id="b">物业缴费</mt-tab-item>
-			<mt-tab-item id="d">查询缴费</mt-tab-item>
+			<mt-tab-item id="d">账单缴费</mt-tab-item>
+			
 	    	
 	    	
 	    </mt-navbar>
 		<mt-tab-container v-model="selected">
-		  <mt-tab-container-item id="a">
+		  <mt-tab-container-item id="d">
 		  	<!-- 账单缴费开始-->
 		    <div class="lite-divider">
 	            <input placeholder="输入账单号可快速缴费" class="hidden-input" style="text-align:left;" v-model="stmtId">
@@ -89,43 +91,15 @@
 		  </mt-tab-container-item>
 
 		  <!-- 查询缴费开始 -->
-		  <mt-tab-container-item id="d">
+		  <mt-tab-container-item id="a">
 		  	
 		  	<div class="query-data">
 		  		<div class="input-row">
-			  		小区：
-					    <!-- v-on:input="shousuo(query.sect)" -->
-					  <input type="text" id="btnd" class="virtual-input classinput" value=""  placeholder="请输入小区" @input="shousuo(query.sect)" v-model.trim="query.sect"   @blur="shi" @focus="huo">
-					  	<i class="iconfont icon-chacha  classc" @click="clicki" v-show="showi"></i>
-			  		<!-- <select class="virtual-input" v-model="query.sect">
-						  <option v-for="item in sectList" :value="item.id" >{{item.name}}</option>   v-tap="{fn:alertFN,name:item.name}""
-			  		</select> -->
-					<ul class="input-uis test" v-show="shows" >
-						<li :data-idd="item.id" v-for="item in sectList" :key="item.id"  v-tap="{fn:alertFN,name:item.name,id:item.id}">{{item.name}}</li>
-					</ul>
-					
+			  		户号：
+					  <input type="text" id="btnd" class="virtual-input classinput" value=""  placeholder="请输入户号" v-model="huhao" @change="huhaoserach()">
+					  	<!-- <i class="iconfont icon-chacha  classc" @click="clicki" v-show="showi"></i> -->
 			  	</div>
-			  	<div class="input-row">
-			  		楼宇：
-			  		<select class="virtual-input" v-model="query.build"  @change="getCouponSelected">
-						<!-- <option value="0">请选择</option> -->
-			  			<option v-for="item in buildList" :value="item.id" :key="item.id">{{item.name}}</option>
-			  		</select>
-			  	</div>
-			  	<div class="input-row">
-			  		门牌：
-			  		<select class="virtual-input" v-model="query.unit" @change="getCoupon">
-						<!-- <option value="0">请选择</option> -->
-			  			<option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</option>	
-			  		</select>
-			  	</div>
-			  	<div class="input-row">
-			  		室号：
-			  		<select class="virtual-input" v-model="query.house" @change="getCoupons">
-						   <!-- <option value="0">请选择</option> -->
-			  			<option v-for="item in houseList" :value="item.id" :key="item.id">{{item.name}}</option>	
-			  		</select>
-			  	</div>	
+			  
 		  	</div>
 		  	<mt-loadmore 
 			  	:bottomMethod="queryLoadBottom" 
@@ -137,7 +111,6 @@
 			  	<Bill :bill-info="queryBillInfo" @itemClick="itemClick"></Bill>
 
 				<div slot="bottom" class="mint-loadmore-bottom">
-					<!-- :class="{ 'is-rotate ': bottomStatus === 'drop' }" -->
 					<span v-show="bottomStatus !== 'loading'" >上拉加载</span>
 					<span v-show="bottomStatus === 'loading'">
 						<mt-spinner type="snake"></mt-spinner>
@@ -216,12 +189,9 @@
 	  		return parseFloat(ap).toFixed(2)
 	    }
 	  },
+	 
 	  data(){
 	  	return {
-	  		sectList:[],//小区列表
-	  		buildList:[],//楼宇列表
-	  		unitList:[],//门牌列表
-	  		houseList:[],//室号列表
 	  		query:{//查询缴费数据
 	  			sect:'',//小区
 				sectID:'',//小区id
@@ -229,7 +199,8 @@
 	  			unit:'',//门牌id
 	  			house:'',//室号id
 	  		},
-
+            huhao:'',//户号
+			mng_cell_id:'',
 	  		stmtId:'',//快捷缴费 扫描出来的账单号
 	  		url : '/billList',
 	  		params : {
@@ -301,15 +272,18 @@
 			vm.carBillInfo = vm.data.result.car_bill_info;//停车缴费
 			vm.permit_skip_pay=vm.data.result.permit_skip_pay;//判断跳跃付款  
 	  	},vm.params) ;
-	  	//查询缴费 小区数据
-	  	// vm.receiveData.getData(vm,'/getSect','sectList',function(){
-	  	// 	vm.sectList = vm.sectList.result
-		  // });
 
-		
-
+	
 	  },
 	  methods:{
+		  huhaoserach(){
+ vm.receiveData.getData(vm,"/hexiehouse/"+vm.huhao,'res',function(){
+			  if(vm.res.success){
+                    vm.mng_cell_id=vm.res.result.mng_cell_id;
+					vm.queryBillList();
+		  }
+ })
+		  },
 		  handleBottomChange(status) {
 			  vm.bottomStatus= status
 		  },
@@ -320,188 +294,14 @@
 					vm.receiveData.getData(vm,url,'Data',function(){
 				});
 			},
-
-		  //搜索小区
-		  shousuo(name) {
-			  if(timer) {
-				  clearTimeout(timer);
-			  }
-			  timer=setTimeout(() => {
-				  this.getHousin(name);
-				if(name == '') {
-					this.shows=false;
-				};
-				// vm.add();
-			  }, 400);
-			   
-		  },
-		//获取小区
-		getHousin(name) {
-			let url = '/getVagueSectByName?sect_name='+name;
-					vm.receiveData.getData(vm,url,'Datas',function(){
-							let link=null;
-							link=vm.Datas.result.sect_info;
-							if(link && link.length >0) {
-								vm.sectList=vm.Datas.result.sect_info;
-								vm.shows=true;
-								vm.showi=true;
-							}else {
-								vm.shows=false;
-								vm.showi=true;
-								// alert('没有搜索到该小区');
-								// return false;
-							}
-				});
-		},
-		//叉叉
-		clicki() {
-			if(vm.sectList.length<=0) {
-				vm.query.sect='';
-				vm.query.build='';
-				vm.query.unit='';
-				vm.query.house='';
-				var add=document.getElementById('btnd')
-				add.value=''
-			}
-			vm.query.sect='';
-			vm.query.build='';
-			vm.query.unit='';
-			vm.query.house='';
-
-			vm.buildList=[];
-			vm.unitList=[];
-			vm.houseList=[];
-			var add=document.getElementById('btnd')
-				add.value='';
-
-			vm.shows=false;
-			vm.showi=false;
-			vm.queryBillInfo  = [];//清空查询账单列表
-		},
-		add() {
-			vm.getCellMng(vm.query.sectID,'','','03');
-			vm.getCellMng(vm.query.sectID,vm.query.build,'','02');
-			vm.getCellMng(vm.query.sectID,vm.query.build,vm.query.unit,'01');
-		},
-		//替换搜索内容
-		alertFN(s) {
-			 vm.$nextTick(function(){
-				var add=document.getElementById('btnd')
-				add.value=s.name
-				vm.query.sect = s.name;
-				vm.query.sectID=s.id;
-				// console.log(s.id);
-					vm.shows=false;
-					vm.one='two'
-						vm.add();
-			  })
 		
-		},
-		//失去焦点
-		shi() {
-			if(vm.query.sect !='' && vm.sectList.length>=0) {
-				
-			}
-			// 
-			if(vm.one!='two' && vm.query.sect!=''&& vm.sectList.length>=0) {
-				vm.shows=false;
-				vm.showi=true;
-				var id='';
-				for(var i=0;i<vm.sectList.length; i++ ) {
-					if(vm.query.sect===vm.sectList[i].name) {
-						id=vm.sectList[i].id;
-					}
-				}
-				this.query.sectID=id;
-					vm.add();
-			}
-			
-		},
-		//获取焦点
-		huo() {
-			if(vm.query.sect !='' && vm.sectList.length>0) {
-				vm.shows=true;
-				vm.showi=true;
-			}
-		},
-
-		//楼宇选中
-		getCouponSelected() {
-			// sectList:[],//小区列表
-	  		// buildList:[],//楼宇列表
-	  		// unitList:[],//门牌列表
-	  		// houseList:[],//室号列表
-			  
-			  vm.getCellMng(vm.query.sectID,vm.query.build,'','02');
-				
-		},
-		//门牌选中
-		getCoupon(){
-			
-			this.getCellMng(this.query.sectID,this.query.build,this.query.unit,'01');
-			
-		},
-		//室号选中
-		getCoupons() {
-			
-				//获取用户数据
-			//重置
-		  		vm.queryBillInfo= [];//清空查询账单列表
-    			vm.queryBillPage = 1;//页码重置
-    			vm.queryisLastPage=false;//是否最后一页重置
-    			// 请求查询账单数据
-    			vm.queryBillList();
-		},
-	  	//请求 楼宇 门牌 室号 数据
-	  	// 参数1： 小区id 参数2： 楼宇id 参数3： 室号id 参数4： 数据类型（03：楼宇；02：门牌；01：房屋）
-	  	getCellMng(sect_id,build_id,unit_id,data_type){
-	  		// if ($("#phoneAjax") != null) {
-			// 	$("#phoneAjax").removeClass("hidden");
-			// }
-			vm.showp=true;
-			let url='/getHeXieCellById';
-			let params = {
-				sect_id, 
-				build_id,
-				unit_id,
-				data_type 
-			};
-			vm.receiveData.getData(vm,url,'queryInfo',function(){
-				let InfoList = vm.queryInfo.result;
-				if(Array.isArray(InfoList) && InfoList.length<=0) {
-					vm.showp=false;
-				}else {
-					vm.queryBillInfo  = [];//清空查询账单列表
-					if ("03"==data_type) {
-						vm.buildList = InfoList.build_info;
-						vm.buildList.unshift({id:'0',name:'请选择'})
-						vm.unitList = [];
-						vm.houseList = [];
-					}else if("02"==data_type){
-						vm.unitList= InfoList.unit_info;
-						vm.unitList.unshift({id:'0',name:'请选择'})
-						// vm.unitList=[];
-						vm.houseList = [];
-							if(vm.unitList.length==1) {
-								vm.getCellMng(vm.query.sectID,vm.query.build,vm.query.unit,'01');
-						}
-					}else if("01"==data_type){
-						vm.houseList = InfoList.house_info;
-						vm.houseList .unshift({id:'0',name:'请选择'})
-					}
-					vm.showp=false;
-					// if ($("#phoneAjax") != null) {
-					// 	$("#phoneAjax").addClass("hidden");
-					// }
-				}
-
-			},params)
-		},
+	  
 		//请求查询缴费 账单列表
 		queryBillList(){
 			vm.showp=true;
 			let url = 'billList';
-			vm.params.house_id = vm.query.house;
+			// vm.params.house_id = vm.query.house;
+			vm.params.house_id = vm.mng_cell_id;
 			vm.params.currentPage = 1;
 			vm.receiveData.getData(vm,url,'queryBillInfo',function(){
 				// if(vm.queryBillInfo.result == null) {
@@ -792,6 +592,7 @@
 	/*查询缴费*/
 	.input-row .classinput {
 		 padding-right:0.36rem;
+		 font-size:.26rem;
 		  /* user-select: none; */
 	}
 
@@ -817,6 +618,7 @@
 		color: #a6937c;
 		height: 0.6rem;
 		position:relative;
+		margin-top:.3rem;
 	}
 
    .input-row .input-uis {

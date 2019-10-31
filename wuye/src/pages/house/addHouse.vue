@@ -65,8 +65,10 @@
 		  }
 	  },
 	  mounted(){
+		 
 	  },
 	  methods:{
+		  
 	  	 show(){
 	  	 	//调用微信扫一扫 成功数据返回到number
 	  	 	vm.receiveData.scan(vm,wx,'number')

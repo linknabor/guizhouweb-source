@@ -34,7 +34,7 @@
 				<span class="fr">{{data.cnst_area}}平米</span>
 			</li>
 			<li>
-				{{data.mng_cell_id}}(户号)
+				{{data.ver_no}}(户号)&nbsp;{{data.cust_name}}
 			</li>
 		</ul>
 		<!-- <loading v-show="loadingShow"></loading> -->
@@ -60,17 +60,20 @@
 	  			name:'',
 	  		},
 	  		axiosParams:{
-        		number: this.$route.params.number
+				// number: this.$route.params.number
+				number: this.$route.params.number
+				
 			},
 			canAddhouse:false,
 
 	  	}
 	  },
 	  mounted(){
+		  
 	  	//查询number下的房屋
-	  	 let url = '/hexiehouse?stmtId='+ this.axiosParams.number+'&house_id=';
-	  	 // let url = '/hexiehouse/'+this.axiosParams.number;
-	  	//getData: function (vm, url,backdataname) {
+	  	//  let url = '/hexiehouse?stmtId='+ this.axiosParams.number+'&house_id=';
+	  	 let url = '/hexiehouse/'+this.axiosParams.number;
+	  
   		vm.receiveData.getData(vm,url,'response',function(){
 			  if(vm.response.success) {
 					if(vm.response.result== null) {
@@ -89,8 +92,8 @@
 	  },
 	  methods:{
 		  addHouse(){//添加房子 post 提交两个参数 
-				let stmtId = this.axiosParams.number;
-				let url2 = '/addhexiehouse?stmtId='+stmtId+'&houseId='+this.data.mng_cell_id;
+				// let stmtId = this.axiosParams.number;
+				let url2 = '/addhexiehouse?houseId='+this.data.mng_cell_id+"&stmtId=";
 				vm.receiveData.postData(vm,url2,this.data,'res',function(){
 					// vm.loadingShow = false;
 					if(vm.res.success){
@@ -99,13 +102,13 @@
 								vm.$router.push("/myHouse")
 							})
 						}else{
-							MessageBox.alert('添加房子失败', vm.config.house_domain.domain).then( action =>{
+							MessageBox.alert('当前用户已经认领该房屋！', vm.config.house_domain.domain).then( action =>{
 								vm.$router.push("/myHouse")
 							})
 						}
 					}else{
 						MessageBox.alert(vm.res.message).then( action =>{
-							vm.$router.push("/addHouse")
+							vm.$router.push("/myHouse")
 						})
 					}
 				})

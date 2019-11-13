@@ -11,7 +11,7 @@
                         </div>
                 </div>
             <!-- 费用列表 -->
-			<dl v-for="item in feeList" class="fee-list ">
+			<dl v-for="item in feeList" class="fee-list" v-if="version=='02'">
 				<dt class="ov">
 					<p class="fee-name fl" >{{item.service_fee_name}}</p>
 					<p class="fee-price fr" >￥{{item.totalFee.toFixed(2)}}</p>
@@ -19,6 +19,16 @@
 				<dd class="ov" v-for="i in item.fee_detail">
 					<p class="detail-date fl">{{i.service_fee_cycle}}</p>
 					<p class="detail-price fr">{{i.fee_price}}</p>
+				</dd>
+			</dl>
+			<dl v-for="item in feeList" class="fee-list" v-if="version=='01'">
+				<dt class="ov">
+					<p class="fee-name fl" >{{item.fee_type_show_name}}</p>
+					<p class="fee-price fr" >￥{{item.fee_price}}</p>
+				</dt>
+				<dd class="ov">
+					<p class="detail-date fl">{{item.start_date | moment("YYYY年MM月DD日")}}-{{item.end_date | moment("YYYY年MM月DD日")}}</p>
+					<p class="detail-price fr">{{item.fee_price}}</p>
 				</dd>
 			</dl>
             <!-- 优惠选项 -->
@@ -150,6 +160,7 @@ export default {
 			credit_code:'',//公司税号
 			payAddr:"",
 			bind_switch:"1",
+			version:''
 
        };
    },
@@ -159,7 +170,14 @@ export default {
 			if(vm.routeParams.stmtId == " "){
 				vm.routeParams.stmtId = ""
 			}
-       vm.calcReduceAmt()
+	   vm.calcReduceAmt()
+	   //无账单缴费
+			    this.house_id = this.$route.query.house_id;
+                this.sect_id = this.$route.query.sect_id;
+                this.start_date=this.$route.query.start_date;
+                this.end_date=this.$route.query.end_date;
+                this.getversion=this.$route.query.getversion;
+                vm.version=this.$route.query.getversion;
    },
    watch:{
 		invoice_title_type() {
@@ -210,6 +228,32 @@ export default {
 			},
        //获取账单
        getBillDetail() {
+		   //无账单缴费
+		   if(vm.version=='01'){
+		       let url="getPayListStd?&house_id="+ this.house_id +
+		      "&sect_id="+this.sect_id +"&start_date="+this.start_date +"&end_date="+this.end_date; 
+               vm.receiveData.getData(
+                vm,url,'data',function(){
+						  
+				    vm.show_com_flag=vm.data.result.other_bill_info[0].show_com_flag;
+					vm.show_invoice_flag = vm.data.result.other_bill_info[0].show_invoice_flag;
+					vm.show_invoice=vm.data.result.other_bill_info[0].show_invoice;
+					if(vm.data.result.fee_data  == null){
+		
+					}
+                    let useDate = vm.data.result.other_bill_info[0];
+                    vm.verNumber = useDate.ver_no;
+                 			//地址
+                    vm.addr = useDate.cell_addr;
+	
+              				//面积
+                    vm.area = useDate.cnst_area;
+               				//费用列表
+                    vm.feeList = vm.data.result.other_bill_info;
+
+                }
+             )
+            }else{
            let url = "/getBillDetail";
            let params={
 	  				billId :vm.routeParams.billIds,
@@ -245,7 +289,8 @@ export default {
                }
 
 
-            },params)
+			},params)
+}
        },
        //获取优惠券
        updateCouponStatus() {
@@ -354,8 +399,13 @@ export default {
 					return;
 				}
 			};
-            $('.box-bg').css("display",'block');
-            let url = "/getPrePayInfo?billId="+vm.routeParams.billIds+"&stmtId="+vm.routeParams.stmtId+"&couponUnit="+vm.upronAmountNumber+"&couponNum=1&couponId="+vm.couponId+"&mianBill="+vm.mianBill+"&mianAmt="+vm.mianAmt+"&reduceAmt="+vm.reduceAmt+"&invoice_title_type="+this.invoice_title_type+"&credit_code="+this.credit_code+"&invoice_title="+this.invoice_title;
+			$('.box-bg').css("display",'block');
+			let url;
+			if(vm.version=='01'){
+				url = "getOtherPrePayInfo?houseId="+this.house_id+"&start_date="+ this.start_date+"&end_date="+this.end_date+"&couponUnit="+vm.upronAmountNumber+"&couponNum=1&couponId="+vm.couponId+"&mianBill="+vm.mianBill+"&mianAmt="+vm.mianAmt+"&reduceAmt="+vm.reduceAmt+"&invoice_title_type="+this.invoice_title_type+"&credit_code="+this.credit_code+"&invoice_title="+this.invoice_title;
+				}else{
+                url = "getPrePayInfo?billId="+vm.routeParams.billIds+"&stmtId="+vm.routeParams.stmtId+"&couponUnit="+vm.upronAmountNumber+"&couponNum=1&couponId="+vm.couponId+"&mianBill="+vm.mianBill+"&mianAmt="+vm.mianAmt+"&reduceAmt="+vm.reduceAmt+"&invoice_title_type="+this.invoice_title_type+"&credit_code="+this.credit_code+"&invoice_title="+this.invoice_title;
+				}
             
             this.axios.post(url,{}).then((res) => {
 

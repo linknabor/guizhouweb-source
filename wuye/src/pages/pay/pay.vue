@@ -1,5 +1,5 @@
 <template>
-<!-- <div id="divwuye"  @scroll="getscroll"> -->
+<div id="divwuye"  @scroll="getscroll">
 	<div class="main">
 		<!-- 加载中 -->
 		<div id="phoneErro"></div>
@@ -26,23 +26,24 @@
 	            <div class="scan-icon" @click="show"></div>
 	        </div>
 			<mt-button class="subBtn" size="large" @click.native="submit" >提交</mt-button>
-			<mt-loadmore 
+			<!-- <mt-loadmore 
 			  	:bottomMethod="quickloadBottom" 
 			  	:auto-fill = "false"
 			  	:bottomAllLoaded = "quickisLastPage"
 				ref="loadmore1"
 				@bottom-status-change="handleBottomChange"
-			  	>
+			  	> -->
+				  <div id="word">
 			  		<Bill :bill-info="quickBillInfo" :version="version" @itemClick="itemClick"></Bill>
-				<div slot="bottom" class="mint-loadmore-bottom">
+				<!-- <div slot="bottom" class="mint-loadmore-bottom"> -->
 					<!-- :class="{ 'is-rotate ': bottomStatus === 'drop' }" -->
-					<span v-show="bottomStatus !== 'loading'" >上拉加载</span>
+					<!-- <span v-show="bottomStatus !== 'loading'" >上拉加载</span>
 					<span v-show="bottomStatus === 'loading'">
 						<mt-spinner type="snake"></mt-spinner>
-					</span>
+					</span> -->
 				</div>
 
-			</mt-loadmore>
+			<!-- </mt-loadmore> -->
 			<div style="width:100%;height:0.92rem;"></div>
 			<div class="btn-fixed">
 	    		<div class="fl select-btn"  v-show="quan1"  :class="{allSelected:quickAllselect}" @click="allSelect(quickBillInfo,'quickAllselect')">全选&nbsp;</div>
@@ -57,24 +58,25 @@
 		  </mt-tab-container-item>
 		  <mt-tab-container-item id="b">
 			<!-- 物业缴费开始 -->
-		    	<mt-loadmore 
+		    	<!-- <mt-loadmore 
 			  	:bottomMethod="loadBottom" 
 			  	:auto-fill = "false"
 			  	:bottomAllLoaded = "bisLastPage"
 				ref="loadmore2"
 				@bottom-status-change="handleBottomChange"
-			  	>
+			  	> -->
+				  <div id="word">
 			  		<Bill :bill-info="billInfo" :version="version" @itemClick="itemClick"></Bill>
 
-				<div slot="bottom" class="mint-loadmore-bottom">
+				<!-- <div slot="bottom" class="mint-loadmore-bottom"> -->
 					<!-- :class="{ 'is-rotate ': bottomStatus === 'drop' }" -->
-					<span v-show="bottomStatus !== 'loading'" >上拉加载</span>
+					<!-- <span v-show="bottomStatus !== 'loading'" >上拉加载</span>
 					<span v-show="bottomStatus === 'loading'">
 						<mt-spinner type="snake"></mt-spinner>
-					</span>
+					</span> -->
 				</div>	  
 
-			 	</mt-loadmore>
+			 	<!-- </mt-loadmore> -->
 				 
             <!-- <mt-spinner type="snake"></mt-spinner> -->
 
@@ -120,23 +122,24 @@
 
 			  
 		  	</div>
-		  	<mt-loadmore 
+		  	<!-- <mt-loadmore 
 			  	:bottomMethod="queryLoadBottom" 
 			  	:bottomAllLoaded = "queryisLastPage"
 			  	:auto-fill = "false"
 				ref="loadmore"
 				@bottom-status-change="handleBottomChange"
-			>
+			> -->
+			<div id="word">
 			  	<Bill :bill-info="queryBillInfo" @itemClick="itemClick" :version="version" :other-billinfo="otherbillinfo"></Bill>
 
-				<div slot="bottom" class="mint-loadmore-bottom">
+				<!-- <div slot="bottom" class="mint-loadmore-bottom">
 					<span v-show="bottomStatus !== 'loading'" >上拉加载</span>
 					<span v-show="bottomStatus === 'loading'">
 						<mt-spinner type="snake"></mt-spinner>
-					</span>
+					</span> -->
 				</div>
 
-			</mt-loadmore>
+			<!-- </mt-loadmore> -->
 			<div style="widtt:100%;height:0.92rem;"></div>
 			<div class="btn-fixed" id="st" v-show="showt">
 	    		<div  class="fl select-btn" v-show="quan3"  :class="{allSelected:queryAllselect }" @click="allSelect(queryBillInfo,'queryAllselect')">全选&nbsp;</div>
@@ -151,7 +154,7 @@
 		  	
 		  </mt-tab-container-item>
 		</mt-tab-container>
-		<!-- </div> -->
+		</div>
 		 <div  v-show="isshow"
       style=" background: rgba(0,0,0,0.5);display: none;width: 100%;height: 100%;top: 0rem; position: absolute;"></div>
 	</div>
@@ -160,6 +163,7 @@
 <script>
 	let vm;
 	let timer,startData,endData;
+	let isloadPage=false;
 	import wx from 'weixin-js-sdk';
 	import '../../assets/js/tap.js'
 	import axios from 'axios';
@@ -293,15 +297,10 @@
 		  moment
 	  },
 	  watch:{
-		//   query:{//查询缴费数据
-	  	// 		sect:'',//小区
-	  	// 		build:'',//楼宇id
-	  	// 		unit:'',//门牌id
-	  	// 		house:'',//室号id
-	  	// 	},
-		//   'query.sect'(name,van) {
-			 
-		//   }
+		selected(newv,old){
+      isloadPage=false;
+      
+    }
 
 	  },
 	  created(){
@@ -320,12 +319,55 @@
 	  		vm.reduceMode = vm.data.result.reduce_mode;//减免方式
 			vm.carBillInfo = vm.data.result.car_bill_info;//停车缴费
 			vm.permit_skip_pay=vm.data.result.permit_skip_pay;//判断跳跃付款  
+			vm.billPage += 1;
 	  	},vm.params) ;
 
 	
 	  },
 	  methods:{
-		  //标准版时间显示
+		 
+//查询账单
+		  huhaoserach(){
+			  
+ vm.receiveData.getData(vm,"/hexiehouse/"+vm.huhao,'res',function(){
+			  if(vm.res.success){
+				 
+					vm.mng_cell_id=vm.res.result.mng_cell_id;
+					vm.getversion=vm.res.result.version;
+					vm.query.sectID=vm.res.result.sect_id;
+					vm.query.house=vm.res.result.mng_cell_id;
+					vm.queryBillInfo = []; //清空查询账单列表
+					vm.otherbillinfo = []; 
+					vm.queryBillPage = 1; //页码重置
+					isloadPage=false;//重置加载状态
+
+					vm.queryisLastPage = false; //是否最后一页重置
+					 if (vm.getversion == "01") {
+						vm.getBillStartDate();
+						vm.version = vm.getversion;
+						vm.zhuanpay="biaozhun";
+					} else {
+					
+						vm.version = "02";
+						vm.queryBillList();
+						
+					}
+					
+		  }
+ })
+		  },
+		  handleBottomChange(status) {
+			  vm.bottomStatus= status
+		  },
+		  //模仿线上用户信息
+			//105/747/384
+		  initSession4Test(){
+				let url = '/initSession4Test/105';
+					vm.receiveData.getData(vm,url,'Data',function(){
+				});
+			},
+		
+	   //标准版时间显示
 		  formatDate(date, fmt) {
             var currentDate = new Date(date);
             var o = {
@@ -406,69 +448,48 @@
       );
     },
 
-//查询账单
-		  huhaoserach(){
-			  
- vm.receiveData.getData(vm,"/hexiehouse/"+vm.huhao,'res',function(){
-			  if(vm.res.success){
-					vm.mng_cell_id=vm.res.result.mng_cell_id;
-					vm.getversion=vm.res.result.version;
-					vm.query.sectID=vm.res.result.sect_id;
-					vm.query.house=vm.res.result.mng_cell_id;
-					 if (vm.getversion == "01") {
-						vm.getBillStartDate();
-						vm.version = vm.getversion;
-						vm.zhuanpay="biaozhun";
-					} else {
-					
-						vm.version = "02";
-						vm.queryBillList();
-						
-					}
-					
-		  }
- })
-		  },
-		  handleBottomChange(status) {
-			  vm.bottomStatus= status
-		  },
-		  //模仿线上用户信息
-			//105/747/384
-		  initSession4Test(){
-				let url = '/initSession4Test/105';
-					vm.receiveData.getData(vm,url,'Data',function(){
-				});
-			},
-		
-	  
+
 		//请求查询缴费 账单列表
 		queryBillList(){
 			vm.showp=true;
 			let url = 'billList';
-			// vm.params.house_id = vm.query.house;
 			vm.params.house_id = vm.mng_cell_id;
-			vm.params.currentPage = 1;
-			vm.receiveData.getData(vm,url,'queryBillInfo',function(){
-				// if(vm.queryBillInfo.result == null) {
-				// 	vm.queryBillInfo=[]
-				// 	vm.showp=false;
-				// }
-				
-				if(vm.queryBillInfo.result.bill_info && vm.queryBillInfo.result.bill_info.length>0) {
-					vm.permit_skip_pay = vm.queryBillInfo.result.permit_skip_pay;
-					vm.pay_least_month = vm.queryBillInfo.result.pay_least_month;//3月份
-					vm.reduceMode=vm.queryBillInfo.result.reduce_mode;  //从新赋值减免方式
-				   console.log('我是减免方式:'+vm.queryBillInfo.result.reduce_mode+'我把他赋值给'+vm.reduceMode)
+			vm.params.sect_id = vm.query.sectID;
+            vm.params.currentPage = vm.queryBillPage;
+			// vm.params.currentPage = 1;
+			vm.receiveData.getData(vm,url,'queryBillInfo',function() {
+          if (vm.queryBillInfo.success) {
+            if (vm.queryBillInfo.result == null) {
+              vm.queryBillInfo = [];
+            } else {
+              vm.queryBillPage+=1;
+              vm.permit_skip_pay = vm.queryBillInfo.result.permit_skip_pay;
+              vm.pay_least_month = vm.queryBillInfo.result.pay_least_month; //3月份
+              vm.reduceMode = vm.queryBillInfo.result.reduce_mode; //从新赋值减免方式
+              vm.park_discount_rule_conf=vm.queryBillInfo.result.park_discount_rule_conf;//物业减免
+              vm.park_discount_rule=vm.queryBillInfo.result.park_discount_rule;
 
-					vm.queryBillInfo = vm.queryBillInfo.result.bill_info;
+              // console.log('我是减免方式:'+vm.queryBillInfo.result.reduce_mode+'我把他赋值给'+vm.reduceMode)
 
-					vm.showp=false;
-				}else {
-					alert('没有搜索到账单')
-					vm.queryBillInfo=[]
-				}
-					vm.showp=false;
-			},vm.params)
+              if (
+                vm.queryBillInfo.result.bill_info &&
+                vm.queryBillInfo.result.bill_info.length > 0
+              ) {
+                vm.queryBillInfo = vm.queryBillInfo.result.bill_info;
+
+                // vm.showp = false;
+              } else {
+                alert("没有搜索到账单");
+                vm.queryBillInfo = [];
+              }
+            }
+          } else {
+            alert("没有搜索到账单");
+            vm.queryBillInfo = [];
+          }
+          vm.showp = false;
+        },
+			vm.params)
 		
 		},
 
@@ -477,9 +498,10 @@
 	  		if(vm.stmtId == "" || vm.stmtId.length != 18){
 	  			alert('请输入正确账单号');
 	  			return ;
-	  		}
-
-	  		vm.quickBillpage = 1;
+			  }
+			isloadPage=false; //重置加载状态
+			vm.quickAllselect = false;//重置加载状态
+            vm.quickBillpage = 1;
 	  		let url = "quickPayBillList/"+vm.stmtId+"/"+vm.quickBillpage+"/"+vm.params.totalCount;
 	  		vm.receiveData.getData(
 	  			vm,
@@ -491,41 +513,63 @@
 						vm.quickBillInfo = vm.quickData.result.bill_info;
 						vm.reduceMode = vm.quickData.result.reduce_mode;
 						vm.pay_least_month = vm.quickData.result.pay_least_month;
+						vm.quickBillpage+=1
 	  				}else{
 	  					alert('未查询到数据')
 	  				}
 	  			}
 	  		)
 
-	  	},
+		  },
+		   //分页 
+		 getscroll(e) {
+			var st = e.srcElement.scrollTop;
+			// console.log(st);
+			var ad=window.innerHeight
+			var hd=$('#word').height();
+			// console.log(st+ad)
+			if( st+ad >=hd && !isloadPage) {
+				isloadPage=true;
+				if(vm.selected=='a'){
+					vm.queryLoadBottom();
+				}else if(vm.selected=='b') {
+					vm.loadBottom();
+				}else {
+					vm.quickloadBottom();
+				}
+			}
+       },  	
 		  queryLoadBottom(){//查询缴费上拉加载数据
-		  setTimeout(() => {
+		 
 	  		let tempArr = null;
 	  		//页码加1
-	  		vm.queryBillPage += 1;
+	  		// vm.queryBillPage += 1;
 	  		vm.params.currentPage = vm.queryBillPage;
 	  		let url = 'billList';
 	  		vm.receiveData.getData(vm,url,'pageData4',function(){
 	  			tempArr = vm.pageData4.result.bill_info;
 	  			if( tempArr && tempArr.length > 0){
-  					vm.queryBillInfo =vm.queryBillInfo.concat(tempArr) //快捷缴费
+					  vm.queryBillInfo =vm.queryBillInfo.concat(tempArr) //快捷缴费
+					   vm.queryAllselect=false;
+						vm.queryBillPage+=1;
+						isloadPage=false;
 	  			}else{
 					  vm.quan3=true;
-					  vm.queryisLastPage = true;
+					//   vm.queryisLastPage = true;
 				  }
 				  
-			vm.$refs.loadmore.onBottomLoaded();
+			// vm.$refs.loadmore.onBottomLoaded();
 
 			},vm.params)
-		},1500)	
+	
 	  	},
 
 		  quickloadBottom(){//快捷缴费上拉加载数据
-		  setTimeout(()=>{ 
+		  
 	  		//临时接收的数组
 	  		let tempArr = null;
 	  		//页码加1
-	  		vm.quickBillpage +=1;
+	  		// vm.quickBillpage +=1;
   			let url = "quickPayBillList/"+vm.stmtId+"/"+vm.quickBillpage+"/"+vm.params.totalCount;
 	  		//请求接口数据
 	  		vm.receiveData.getData(
@@ -535,27 +579,29 @@
 	  			function(){
 	  				tempArr = vm.pageData3.result.bill_info;
 	  				if( tempArr && tempArr.length > 0){
-	  					vm.quickBillInfo =vm.quickBillInfo.concat(tempArr) //快捷缴费
-	  					vm.quickAllselect = false;
+						  vm.quickBillInfo =vm.quickBillInfo.concat(tempArr) //快捷缴费
+						  vm.quickAllselect = false;
+						  vm.quickBillpage += 1;
+						  isloadPage=false;
 	  					
 
 	  				}else{
 						  vm.quan1=true;
-						  vm.quickisLastPage = true;
+						//   vm.quickisLastPage = true;
 						 
 					}
 					
-					vm.$refs.loadmore1.onBottomLoaded()
+					// vm.$refs.loadmore1.onBottomLoaded()
 	  			})
 				
-			},1500)  	
+				
 	  	},
 		  loadBottom(){//物业缴费 上拉加载数据
-		  setTimeout(() => {
+		 
 	  		//临时接收的数组
   			let tempArr = null;
 	  		//页码自增 
-	  		vm.billPage += 1;
+	  		// vm.billPage += 1;
 			vm.params.currentPage = vm.billPage;
 			//请求接口数据
 			vm.receiveData.getData(
@@ -563,17 +609,19 @@
 				vm.url,
 				'pageData',
 				function(){
+					 vm.billPage += 1;
 	  				tempArr = vm.pageData.result.bill_info;//物业缴费
 	  				if(tempArr && tempArr.length > 0){
 	  					vm.billInfo =vm.billInfo.concat(tempArr) //物业缴费
-	  					vm.bAllSelect = false;
+						  vm.bAllSelect = false;
+                          isloadPage=false;
 	  				}else{
 						  vm.quan2=true;
-						  vm.bisLastPage = true;
+						//   vm.bisLastPage = true;
 					}
-			 		 vm.$refs.loadmore2.onBottomLoaded()  		
+			 		//  vm.$refs.loadmore2.onBottomLoaded()  		
 	  			},vm.params)
-        }, 1500);	  
+       
 	  	},
 
 	  	//点击物业缴费按钮
@@ -774,6 +822,7 @@
 		box-sizing: border-box;
 		text-align:left;
 		color:black;
+		line-height:.6rem;
 	}
 	.input-row{
 		padding-bottom: 0.1rem;
@@ -982,5 +1031,21 @@
 	}
 	.city2 {
     background-color: #E0E0E0;
+	}
+	/* 查询账单样式 */
+	#word{
+	overflow: hidden;
+	width: 100%;
+	position: relative;
+	/* background: #eee; */
+	}
+	/* 滚动 */
+	#divwuye {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: auto;
 	}
 </style>

@@ -5,7 +5,7 @@
 		<div class="query-data">
 			  	<div class="input-row">
 			  		户号：
-			  		<input type="text" class="virtual-input" placeholder="请输入户号" value="" v-model="huhao">
+			  		<input type="text" class="virtual-input" placeholder="请输入户号" value="" @input="toTrim" v-model="huhao">
 					  
 			  	</div>
 		  	</div>
@@ -65,14 +65,16 @@
 		components:{Bill},
 		
 		methods:{
-	
+			toTrim(){
+				this.huhao=this.huhao.replace(/\s/g, "")
+			},
 			addRoom(){//判断是否为正确账单号
-	  	 	var reg = /^\d{12}$/
-			if(reg.test(this.huhao)){//为数字即通过
-			   	vm.house()
-	  	 	}else{
-	  	 		MessageBox.alert('请输入正确户号', vm.config.house_domain.domain);
-			   }
+				var reg = /^\d{12}$/
+				if(reg.test(this.huhao)){//为数字即通过
+					vm.house()
+				}else{
+					MessageBox.alert('请输入正确户号', vm.config.house_domain.domain);
+				}
 		
 		   },
 		   house() {
@@ -82,7 +84,7 @@
 						if(vm.response.result== null) {
 							alert('未查询到该房屋')
 						}else {
-	  	 					vm.$router.push('/bindHouse/' + vm.huhao);
+	  	 					vm.$router.push({path:'/bindHouse/' + vm.huhao,query:{type:'1'}});
 						}
 				}else {
 					alert(vm.response.message==null?'未查询到该房屋':vm.response.message)

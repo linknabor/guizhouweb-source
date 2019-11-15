@@ -51,6 +51,14 @@ const router= new Router({
       }
     },
     {
+      path:'/checkPay',
+      name:'checkPay',
+      component:resolve=>require(['@/pages/pay/check-pay'],resolve),
+      meta:{
+        title:'物业缴费'
+      }
+    },  
+    {
       path:'/myHouse',
       name: 'myHouse',
       component:resolve => require(['@/pages/house/myHouse'],resolve),
@@ -119,6 +127,15 @@ const router= new Router({
       name:'news',
       component:resolve =>require(['@/pages/news/index'],resolve),
     },
+    {
+      path:'/identHouse',
+      name:'IdentHouse',
+      component:resolve=> require(['@/pages/house/identify-house'],resolve),
+      meta:{
+        title:'绑定房子'
+      }
+  },
+
 
   ]
 });

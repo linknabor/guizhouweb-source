@@ -123,7 +123,7 @@ export default {
              vm.receiveData.getData(vm,'/getOrder/'+vm.orderId,'n',function() {
                  if(vm.n.success) {
                        vm.order=vm.n.result;
-                        vm.timeStr=vm.getTimeStr();
+                        vm.timeStrtimeStr=vm.getTimeStr();
                  }
                
              })

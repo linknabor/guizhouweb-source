@@ -41,7 +41,7 @@
 <template>
 	<div>
         <div class="lite-divider" style="margin-top:35px;margin-left:15px;margin-right:15px;">
-            <input placeholder="请输入账单号" class="hidden-input" style="text-align:left;" v-model="number">
+            <input placeholder="请输入账单号" class="hidden-input" style="text-align:left;" @input="toTrim" v-model="number">
             <div class="scan-icon" @click="show"></div>
         </div>
 		<mt-button class="subBtn" size="large" @click.native="submit">提交</mt-button>
@@ -65,12 +65,17 @@
 		  }
 	  },
 	  mounted(){
+		 
 	  },
 	  methods:{
+		  
 	  	 show(){
 	  	 	//调用微信扫一扫 成功数据返回到number
 	  	 	vm.receiveData.scan(vm,wx,'number')
-	  	 },
+		   },
+		   toTrim(){
+				this.number=this.number.replace(/\s/g, "")
+			},
 	  	 submit(){//判断是否为正确账单号
 	  	 	var reg = /^\d{18}$/
 			if(reg.test(this.number)){//为数字即通过
@@ -87,7 +92,7 @@
 						if(vm.response.result== null) {
 							alert('未查询到该房屋')
 						}else {
-	  	 					vm.$router.push('/bindHouse/' + vm.number);
+	  	 					vm.$router.push({path:'/bindHouse/' + vm.number,query:{type:'2'}});
 						}
 				}else {
 					alert(vm.response.message==null?'未查询到该房屋':vm.response.message)

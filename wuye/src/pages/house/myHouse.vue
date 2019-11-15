@@ -72,13 +72,8 @@
 					<span class="fl">{{i.cell_addr}}</span> 
 					<span class="fr">{{i.cnst_area}}平米</span>
 				</p>
-				<p>{{i.ver_no}}（户号）</p>
-				<!-- 城市：{{i.city_name}} <br>
-				面积: {{i.cnst_area}}<br>
-				地址：{{i.cell_addr}}<br>
-				号码1：  {{i.mng_cell_id}}<br>
-				小区名字: {{i.sect_name}}<br>
-				号码2 ：{{i.ver_no}} -->
+				<p>{{i.ver_no}}（户号） {{i.cust_name}}</p>
+				
 			</li>
 		</ul>
 		<div class="bottomBtn" @click="addHouse">添加房子</div>
@@ -114,7 +109,7 @@
 	  	},
 	  	addHouse(){
 	  		// this.common.checkRegisterStatus();
-			  this.$router.push("/addHouse")
+			  this.$router.push("/identHouse")
 			  
 	  	},
 	  	del(value,index){

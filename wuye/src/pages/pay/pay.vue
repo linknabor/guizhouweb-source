@@ -362,14 +362,14 @@
 		  //模仿线上用户信息
 			//105/747/384
 		  initSession4Test(){
-				let url = '/initSession4Test/105';
+				let url = '/initSession4Test/1';
 					vm.receiveData.getData(vm,url,'Data',function(){
 				});
 			},
 		
 	   //标准版时间显示
 		  formatDate(date, fmt) {
-            var currentDate = new Date(date);
+			var currentDate = new Date(date);
             var o = {
                 "M+": currentDate.getMonth() + 1, //月份
                 "d+": currentDate.getDate(), //日
@@ -385,17 +385,19 @@
             return fmt;
     },
     specifiName(){
+		 console.log(vm.endData)
       if(vm.is_null=="0"){
+   
           endData=vm.formatDate(vm.endData,'yyyyMMdd');
-          startData=vm.startData;
+		  startData=vm.startData;
           vm.wuzhangdan(startData,endData);
-          vm. isshow=true;
+          vm.isshow=true;
           }else{
             
             startData = vm.formatDate(vm.startData,'yyyyMMdd');
             endData=vm.formatDate(vm.endData,'yyyyMMdd');
             vm.wuzhangdan(startData,endData);
-            vm. isshow=true;
+            vm.isshow=true;
           }
           
         
@@ -434,13 +436,25 @@
             if(vm.is_null=='0'){
               vm.startData=vm.res.result.start_date;
               vm.standard3 =true;
-              vm.standard2=true;
+			  vm.standard2=true;
+			  vm.endData=vm.res.result.end_date;
+			  vm.endData=vm.endData.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+			  startData=vm.startData;
+			  endData=vm.formatDate(vm.endData,'yyyyMMdd');
+              vm.wuzhangdan(startData,endData);
+              vm.isshow=true;
               }else{
 
               vm.standard1=true;
               vm.standard2=true;
-              
-             
+			  vm.startData=vm.res.result.start_date;
+			  vm.endData=vm.res.result.end_date;
+			  vm.startData=vm.startData.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+			  vm.endData=vm.endData.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+			  endData=vm.formatDate(vm.endData,'yyyyMMdd');
+			  startData=vm.formatDate(vm.startData,'yyyyMMdd');
+			  vm.wuzhangdan(startData,endData);
+			  vm.isshow=true;
             }
            
           }

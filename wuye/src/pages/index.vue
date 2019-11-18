@@ -293,8 +293,8 @@ overflow: hidden; background-color: white;}
 			
 		},
 		mounted(){
-			// vm.initSession4Test();
-			vm.queryUserInfo();
+			vm.initSession4Test();
+			// vm.queryUserInfo();
 	  		vm.bannerss();
 		},
 		updated() {

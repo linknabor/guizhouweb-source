@@ -24,8 +24,8 @@ import cookie from 'js-cookie'
 
 
 //本地使用
-// import  common from './assets/js/common'
-// import config from './assets/js/config'
+import  common from './assets/js/common'
+import config from './assets/js/config'
 
 Vue.prototype.config = config;
 Vue.prototype.common = common;

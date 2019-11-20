@@ -127,6 +127,7 @@ let vm;
 import wx from 'weixin-js-sdk';
 import cookie from 'js-cookie';
 import { Base64 } from 'js-base64';
+import moment from "./filter/datafromat";
 export default {
    data () {
        return {
@@ -164,6 +165,9 @@ export default {
 
        };
    },
+		filters: {
+			moment
+		},
    created() {
        vm=this;
     //    this.directRightUrl();
@@ -205,7 +209,7 @@ export default {
 
    methods: {
        	initSession4Test(){
-            let url = '/initSession4Test/79165';
+            let url = '/initSession4Test/47895';
                 vm.receiveData.getData(vm,url,'Data',function(){
             });
         },

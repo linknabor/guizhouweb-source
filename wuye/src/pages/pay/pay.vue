@@ -26,24 +26,10 @@
 	            <div class="scan-icon" @click="show"></div>
 	        </div>
 			<mt-button class="subBtn" size="large" @click.native="submit" >提交</mt-button>
-			<!-- <mt-loadmore 
-			  	:bottomMethod="quickloadBottom" 
-			  	:auto-fill = "false"
-			  	:bottomAllLoaded = "quickisLastPage"
-				ref="loadmore1"
-				@bottom-status-change="handleBottomChange"
-			  	> -->
+	
 				  <div id="word">
 			  		<Bill :bill-info="quickBillInfo" :version="version" @itemClick="itemClick"></Bill>
-				<!-- <div slot="bottom" class="mint-loadmore-bottom"> -->
-					<!-- :class="{ 'is-rotate ': bottomStatus === 'drop' }" -->
-					<!-- <span v-show="bottomStatus !== 'loading'" >上拉加载</span>
-					<span v-show="bottomStatus === 'loading'">
-						<mt-spinner type="snake"></mt-spinner>
-					</span> -->
 				</div>
-
-			<!-- </mt-loadmore> -->
 			<div style="width:100%;height:0.92rem;"></div>
 			<div class="btn-fixed">
 	    		<div class="fl select-btn"  v-show="quan1"  :class="{allSelected:quickAllselect}" @click="allSelect(quickBillInfo,'quickAllselect')">全选&nbsp;</div>
@@ -58,28 +44,9 @@
 		  </mt-tab-container-item>
 		  <mt-tab-container-item id="b">
 			<!-- 物业缴费开始 -->
-		    	<!-- <mt-loadmore 
-			  	:bottomMethod="loadBottom" 
-			  	:auto-fill = "false"
-			  	:bottomAllLoaded = "bisLastPage"
-				ref="loadmore2"
-				@bottom-status-change="handleBottomChange"
-			  	> -->
 				  <div id="word">
 			  		<Bill :bill-info="billInfo" :version="version" @itemClick="itemClick"></Bill>
-
-				<!-- <div slot="bottom" class="mint-loadmore-bottom"> -->
-					<!-- :class="{ 'is-rotate ': bottomStatus === 'drop' }" -->
-					<!-- <span v-show="bottomStatus !== 'loading'" >上拉加载</span>
-					<span v-show="bottomStatus === 'loading'">
-						<mt-spinner type="snake"></mt-spinner>
-					</span> -->
 				</div>	  
-
-			 	<!-- </mt-loadmore> -->
-				 
-            <!-- <mt-spinner type="snake"></mt-spinner> -->
-
 			 	<div style="width:100%;height:0.92rem;"></div>
 		    	<div class="btn-fixed">
 		    		<div class="fl select-btn" v-show="quan2" :class="{allSelected:bAllSelect }" @click="allSelect(billInfo,'bAllSelect')">全选&nbsp;</div>
@@ -99,7 +66,7 @@
 		  	<div class="query-data">
 		  		<div class="input-row">
 			  		<label>户号：</label>
-					  <input type="text" id="btnd" class="virtual-input classinput" value=""  placeholder="请输入户号" v-model="huhao" @change="huhaoserach()">
+					  <input type="text" id="btnd" class="virtual-input classinput" value="" @input="toTrim"  placeholder="请输入户号" v-model="huhao" @change="huhaoserach()">
 					  	<!-- <i class="iconfont icon-chacha  classc" @click="clicki" v-show="showi"></i> -->
 			  	</div>
 				   <!-- 判断是否为无账单显示 -->
@@ -118,28 +85,11 @@
             <input class="virtual-input classinput" type="date" value="" v-model="endData" @change="specifiName()">
               
           </div>
-        
-
-			  
 		  	</div>
-		  	<!-- <mt-loadmore 
-			  	:bottomMethod="queryLoadBottom" 
-			  	:bottomAllLoaded = "queryisLastPage"
-			  	:auto-fill = "false"
-				ref="loadmore"
-				@bottom-status-change="handleBottomChange"
-			> -->
 			<div id="word">
 			  	<Bill :bill-info="queryBillInfo" @itemClick="itemClick" :version="version" :other-billinfo="otherbillinfo"></Bill>
 
-				<!-- <div slot="bottom" class="mint-loadmore-bottom">
-					<span v-show="bottomStatus !== 'loading'" >上拉加载</span>
-					<span v-show="bottomStatus === 'loading'">
-						<mt-spinner type="snake"></mt-spinner>
-					</span> -->
 				</div>
-
-			<!-- </mt-loadmore> -->
 			<div style="widtt:100%;height:0.92rem;"></div>
 			<div class="btn-fixed" id="st" v-show="showt">
 	    		<div  class="fl select-btn" v-show="quan3"  :class="{allSelected:queryAllselect }" @click="allSelect(queryBillInfo,'queryAllselect')">全选&nbsp;</div>
@@ -326,6 +276,9 @@
 	  },
 	  methods:{
 		 
+		 toTrim(){
+				this.huhao=this.huhao.replace(/\s/g, "")
+			},
 //查询账单
 		  huhaoserach(){
 			  
@@ -848,6 +801,7 @@
 		/* float: left; */
 		text-align: right;
 		width: 88%;
+		margin-top:.3rem;
 	}
 
    .input-row .input-uis {

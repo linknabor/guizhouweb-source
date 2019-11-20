@@ -47,33 +47,36 @@
 <script>
 	let vm;
 	import { MessageBox } from 'mint-ui';
-
 	export default {
-	  components:{},
-	  created(){
-	  	vm = this;
-	  },
 	  data(){
 	  	return{
 	  		loadingShow : true,
 	  		data:{
-	  			name:'',
+				  name:'',
 	  		},
 	  		axiosParams:{
-				// number: this.$route.params.number
 				number: this.$route.params.number
 				
 			},
+			type:this.$route.query.type,
 			canAddhouse:false,
 
 	  	}
 	  },
+	  components:{},
+	  created(){
+	  	vm = this;
+	  },
 	  mounted(){
-		  
-	  	//查询number下的房屋
-	  	//  let url = '/hexiehouse?stmtId='+ this.axiosParams.number+'&house_id=';
-	  	 let url = '/hexiehouse/'+this.axiosParams.number;
-	  
+		  //查询number下的房屋 1户号绑定  2账单绑定
+		  let url;
+		  if(vm.type=='1'){
+	 		url = '/hexiehouse/'+this.axiosParams.number;
+		  }else	if(vm.type=='2') {
+	  		url = '/hexiehouse?stmtId='+ this.axiosParams.number+'&house_id=';
+		  }else {
+			return
+		  }
   		vm.receiveData.getData(vm,url,'response',function(){
 			  if(vm.response.success) {
 					if(vm.response.result== null) {

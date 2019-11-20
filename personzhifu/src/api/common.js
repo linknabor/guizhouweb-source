@@ -4,14 +4,14 @@ var MasterConfig = function() {
         baseUrl: "https://test.e-shequ.com/guizhou/wechat/hexie/wechat/",
         basePageUrl:"https://test.e-shequ.com/guizhou/weixin/",
         payPageFolder:"https://test.e-shequ.com/weixin/pay/",
-        payPageSuffix:"zj3",
-        appId: "wx753f3c2293294605",
+        payPageSuffix:"guizhou",
+        appId: "wx95f46f41ca5e570e",
         oauthUrl: "https://open.weixin.qq.com/connect/oauth2/authorize?",
         oauthUrlPostFix:"&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect",
 		oauthUrlPostSilent:"&response_type=code&scope=snsapi_base&state=123#wechat_redirect",
-        bindAppId: "wx753f3c2293294605",
+        bindAppId: "wx95f46f41ca5e570e",
         baidu_map_key:"RUWUgrEEF5VjoaWsstMMZwOD",
-        shop_name: "东湖e家园",
+        shop_name: "贵州幸福家园",
         is_debug:true
     },
 

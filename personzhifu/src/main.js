@@ -21,7 +21,7 @@ import './assets/js/rem';
 import cookie from 'js-cookie'
 
 // import common from './api/common'
-// import baseurl from './api/config'
+// import config from './api/config'
 Vue.prototype.config=config;
 Vue.prototype.common=common;
 

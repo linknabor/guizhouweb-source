@@ -156,7 +156,7 @@ export default {
 					reduceMode:this.$route.query.reduceMode,//减免方式
 				},
             needInvoice:'1',//是否需要发票
-            invoice_title_type:'',//个人01或公司02 
+            invoice_title_type:'01',//个人01或公司02 
             invoice_title:'',//发票抬头
 			credit_code:'',//公司税号
 			payAddr:"",
@@ -195,6 +195,9 @@ export default {
 				this.invoice_title_type =''
 				this.invoice_title='';
 				this.credit_code='';
+			}else{
+				this.invoice_title_type ='01';
+
 			}
 		}
 			
@@ -236,8 +239,8 @@ export default {
 		   if(vm.version=='01'){
 		       let url="getPayListStd?&house_id="+ this.house_id +
 		      "&sect_id="+this.sect_id +"&start_date="+this.start_date +"&end_date="+this.end_date; 
-               vm.receiveData.getData(
-                vm,url,'data',function(){
+               vm.receiveData.getData(vm,url,'data',function(){   
+                   if(vm.data.success){
 						  
 				    vm.show_com_flag=vm.data.result.other_bill_info[0].show_com_flag;
 					vm.show_invoice_flag = vm.data.result.other_bill_info[0].show_invoice_flag;
@@ -255,7 +258,11 @@ export default {
                				//费用列表
                     vm.feeList = vm.data.result.other_bill_info;
 
-                }
+                }else{
+	              alert(vm.data.message);
+
+    }
+}
              )
             }else{
            let url = "/getBillDetail";

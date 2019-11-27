@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/pages/index'
-import Success from '@/pages/success'
+// import Success from '@/pages/success'
 Vue.use(Router)
 
 const router= new Router({
